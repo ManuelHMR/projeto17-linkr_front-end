@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Signup from "./pages/Signup";
-import Timeline from "./pages/Timeline";
+import Signup from "../pages/Signup";
+import Timeline from "../pages/Timeline";
 
 
 function App() {
