@@ -8,3 +8,15 @@ font-family: 'Lato', sans-serif; -- weights: 400 e 700;
 font-family: 'Oswald', sans-serif; -- weight: 700;
 font-family: 'Passion One', cursive; -- weight: 700; 
 */
+
+*{
+    box-sizing: border-box;
+}
+
+body{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-color: #333333;
+}
