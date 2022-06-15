@@ -1,4 +1,5 @@
 import styled from "styled-components";
+
 import Header from "../components/Header";
 import NewPost from "../components/NewPost";
 import Post from "../components/Post";
