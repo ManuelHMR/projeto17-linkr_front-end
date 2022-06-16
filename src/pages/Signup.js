@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 
-const POSTURL = 'https://projeto17-linkr-back-end.herokuapp.com/';
+const POSTURL = 'https://projeto17-linkr-back-end.herokuapp.com/signup';
 
 export default function Signup(){
 
