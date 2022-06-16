@@ -3,10 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 
-const POSTURL = '';
+const POSTURL = 'https://projeto17-linkr-back-end.herokuapp.com/signup';
 
 export default function Signup(){
-
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [signUp, setSignUp] = useState({email:'', password:'', username:'', pictureURL:''});
