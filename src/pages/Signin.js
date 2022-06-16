@@ -160,4 +160,40 @@ const Container = styled.div`
             margin-top:14px;
         }
     }
+    @media (max-width: 1000px){
+        flex-direction: column;
+        .logo-box{
+            margin: 27px 0;
+            h1{
+                color: white;
+                font-size: 76px;
+                width: 237px;
+                text-align: center;
+            }
+            h2{
+                color: white;
+                font-size: 23px;
+                max-width: 237px;
+                line-height: 34.09px
+            }
+        }
+        .form-box{
+            position: relative;
+            width: 100%;
+            align-items: baseline;
+            form{
+                margin-top: 40px;
+            }
+            input{
+                width: 330px;
+                height: 55px;
+                font-size: 22px;
+            }
+            button{
+                width: 330px;
+                height: 55px;
+                font-size: 22px;
+            }
+        }
+    }
 `
