@@ -1,18 +1,45 @@
 import styled from "styled-components";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom"
 
 import Header from "../components/Header";
 import TrendingTags from "../components/tagsBox";
+import Post  from "./../components/Post"
 
 function TagPage(props) {
+  const [posts, setPosts] = useState([]);
+  const {hashtag} = useParams();
+
+  useEffect(() => {
+    const promise = axios.get(`http://localhost:4000/hashtag/${hashtag}`);
+
+    promise.then((response) => {
+      const { data } = response;
+      setPosts(data);
+    });
+    promise.catch((err) => console.log(err.response));
+  }, [hashtag]);
+
   return (
     <>
       <Header />
       <Main>
         <Topo>
-          <h1># react</h1>
+          <h1># {hashtag}</h1>
         </Topo>
         <Container>
-          <Posts></Posts>
+          <Posts>
+          {posts.map((post) => {
+            const { url, text } = post;
+                return (
+                    <Post
+                    url={url}
+                    text={text}
+                    />
+                );
+              })}
+          </Posts>
           <TrendingTags />
         </Container>
       </Main>
