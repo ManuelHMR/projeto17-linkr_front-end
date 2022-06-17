@@ -30,19 +30,19 @@ export default function Header() {
         <HeaderContainer>
             <h1>linkr</h1>
             <Search type="text" placeholder="Search for people" />
-            <UserImg >
+            <UserImg ref={ref}>
                 {
                     selected ? 
                         <>
                             <ion-icon name="chevron-up-outline" onClick={() => setSelected(!selected)}></ion-icon>
-                            <div ref={ref}  className='log-out' onClick={() => signOut()}>
+                            <div className='log-out' onClick={() => signOut()}>
                                 <h3>Logout</h3>
                             </div>
                         </>
                         :
                         <ion-icon name="chevron-down-outline" onClick={() => setSelected(!selected)}></ion-icon>
                 } 
-                <img></img>
+                <img onClick={() => setSelected(!selected)}></img>
             </UserImg>
         </HeaderContainer>
     )
