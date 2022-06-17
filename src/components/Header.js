@@ -1,35 +1,48 @@
 import styled from 'styled-components';
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 
 import {MdSearch} from "react-icons/md";
 
 export default function Header() {
     const navigate = useNavigate();
-    const [selected, setSelected] = useState(false)
+    const [selected, setSelected] = useState(false);
+    let ref = useRef();
 
     function signOut(){
         localStorage.removeItem('token');
         navigate("/");
     };
 
+    useEffect(() => {
+        function OutsideClick(e) {
+            if (selected && ref.current && !ref.current.contains(e.target)) {
+              setSelected(false)
+            }
+        }
+        document.addEventListener("mousedown", OutsideClick)
+        return () => {
+            document.removeEventListener("mousedown", OutsideClick)
+        }
+    }, [selected]);
+
     return(
         <HeaderContainer>
             <h1>linkr</h1>
             <Search type="text" placeholder="Search for people" />
-            <UserImg >
+            <UserImg ref={ref}>
                 {
                     selected ? 
                         <>
-                            <ion-icon name="chevron-up-outline" onClick={() => selected? setSelected(false) : setSelected(true)}></ion-icon>
+                            <ion-icon name="chevron-up-outline" onClick={() => setSelected(!selected)}></ion-icon>
                             <div className='log-out' onClick={() => signOut()}>
                                 <h3>Logout</h3>
                             </div>
                         </>
                         :
-                        <ion-icon name="chevron-down-outline" onClick={() => selected? setSelected(false) : setSelected(true)}></ion-icon>
+                        <ion-icon name="chevron-down-outline" onClick={() => setSelected(!selected)}></ion-icon>
                 } 
-                <img></img>
+                <img onClick={() => setSelected(!selected)}></img>
             </UserImg>
         </HeaderContainer>
     )
