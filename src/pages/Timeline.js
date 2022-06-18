@@ -1,4 +1,4 @@
-import {useState, useEffect} from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -8,23 +8,28 @@ import Post from "../components/Post";
 
 export default function Timeline() {
     const token = localStorage.getItem('token');
-    const [ posts, setPosts ] = useState()
+    const [posts, setPosts] = useState()
 
     useEffect(() => {
         (async () => {
-          try {
-            axios.get("https://projeto17-linkr-back-end.herokuapp.com/posts", {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-              .then((response) => {
-                setPosts(response.data);
-              }).catch(e => console.log(e));
-          } catch (e) {
-            alert("Erro ao receber dados de posts");
-            console.log(e.response);
-          }
+            try {
+                axios.get("https://projeto17-linkr-back-end.herokuapp.com/posts", {
+                    headers: { Authorization: `Bearer ${token}` }
+                })
+                    .then((response) => {
+                        setPosts(response.data);
+                    }).catch(e => {
+                        console.log(e)
+                        alert("An error occured while trying to fetch the posts, please refresh the page");
+                    });
+
+
+            } catch (e) {
+                alert("Erro ao receber dados de posts");
+                console.log(e.response);
+            }
         })();
-      }, [setPosts]);
+    }, [setPosts]);
 
 
     return (
@@ -33,11 +38,11 @@ export default function Timeline() {
             <AllPosts>
                 <h2>timeline</h2>
                 <NewPost></NewPost>
-                {posts?(
-                    posts.length>0?
-                    posts.map(post => Post(post)
-                    ):<p className="no-posts">There are no posts yet</p>
-                    ): <div className='loading' />}
+                {posts ? (
+                    posts.length > 0 ?
+                        posts.map(post => Post(post)
+                        ) : <p className="no-posts">There are no posts yet</p>
+                ) : <div className='loading' />}
             </AllPosts>
         </Container>
     )

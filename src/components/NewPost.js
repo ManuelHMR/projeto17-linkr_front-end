@@ -13,7 +13,10 @@ export default function NewPost(){
             headers: { Authorization: `Bearer ${token}` }
         }).then(()=>{
             alert("Post publicado com sucesso");
-        }).catch((e)=>console.log(e));
+        }).catch((e)=>{
+            console.log(e);
+            alert("Houve um erro ao publicar seu link");
+        });
     }
 
     return(
