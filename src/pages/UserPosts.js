@@ -1,24 +1,29 @@
 import styled from "styled-components";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom"
+import { useParams } from "react-router-dom"
 
 import Header from "../components/Header";
-import TrendingTags from "../components/tagsBox";
+import TrendingTags from "../components/TagsBox";
 import Post  from "./../components/Post"
 
-function UserPage(props) {
+export default function UserPage() {
   const [posts, setPosts] = useState([]);
   const {id} = useParams();
 
   useEffect(() => {
-    const promise = axios.get(`http://localhost:4000/user/${id}`);
-
-    promise.then((response) => {
-      const { data } = response;
-      setPosts(data);
-    });
-    promise.catch((err) => console.log(err.response));
+    (async () => {
+      try {
+        axios.get(`https://projeto17-linkr-back-end.herokuapp.com/user/${id}`)
+          .then((response) => {
+            const { data } = response;
+            setPosts(data);
+          }).catch(e => console.log(e));
+      } catch (e) {
+        alert("Erro ao receber dados dos posts");
+        console.log(e.response);
+      }
+    })();
   }, [id]);
 
   return (
@@ -30,7 +35,8 @@ function UserPage(props) {
         </Topo>
         <Container>
           <Posts>
-          {posts.map((post) => {
+          {posts?(
+          posts.map((post) => {
             const { url, text } = post;
                 return (
                     <Post
@@ -38,7 +44,8 @@ function UserPage(props) {
                     text={text}
                     />
                 );
-              })}
+              })
+              ): <Loading />}
           </Posts>
           <TrendingTags />
         </Container>
@@ -46,8 +53,6 @@ function UserPage(props) {
     </>
   );
 }
-
-export default UserPage;
 
 const Main = styled.main`
   display: flex;
@@ -90,8 +95,18 @@ const Container = styled.div`
 
 const Posts = styled.div`
   width: 613px;
-  height: 100vh;
+  height: auto;
   display: flex;
   justify-content: center;
   margin-right: 25px;
+`;
+
+const Loading = styled.div`
+  animation: is-rotating 1s infinite;
+  width: 25px;
+  height: 25px;
+  border: 4px solid #1877f2;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  margin-left: 300px;
 `;
