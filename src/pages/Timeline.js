@@ -8,6 +8,7 @@ import Post from "../components/Post";
 import TrendingTags from "../components/TagsBox";
 
 export default function Timeline() {
+
   const token = localStorage.getItem("token");
   const [posts, setPosts] = useState();
   
@@ -25,7 +26,7 @@ export default function Timeline() {
             console.log(e.response);
           }
         })();
-      }, [setPosts]);
+    }, [setPosts]);
 
 
   return (
