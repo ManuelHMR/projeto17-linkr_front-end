@@ -39,7 +39,6 @@ const NewPostContainer = styled.div`
     height: 209px;
     background: #FFFFFF;
     border-radius: 16px;
-    margin-top: 43px;
     display: flex;
     position: relative;
     margin-bottom: 21px;

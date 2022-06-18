@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-function TrendingTags(props) {
+export default function TrendingTags(props) {
   return (
     <>
       <Box>
@@ -21,8 +21,6 @@ function TrendingTags(props) {
     </>
   );
 }
-
-export default TrendingTags;
 
 const Box = styled.div`
   width: 301px;

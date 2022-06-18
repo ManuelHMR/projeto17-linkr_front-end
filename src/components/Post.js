@@ -29,7 +29,6 @@ function metadata(url) {
 
 
 
-
 const PostContainer = styled.div`
     width: 611px;
     height: auto;

@@ -13,8 +13,8 @@ function App() {
                 <Route path='/' element={<Signin />} />
                 <Route path='/sign-up' element={<Signup />} />
                 <Route path='/timeline' element={<Timeline />} />
-                <Route path='/hashtag' element={<TagPage />} />
-                <Route path='/user' element={<UserPage />} />
+                <Route path='/hashtag/:hashtag' element={<TagPage />} />
+                <Route path='/user/:id' element={<UserPage />} />
             </Routes>
         </BrowserRouter>
     );

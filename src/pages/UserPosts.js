@@ -1,9 +1,33 @@
 import styled from "styled-components";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"
 
 import Header from "../components/Header";
-import TrendingTags from "../components/tagsBox";
+import TrendingTags from "../components/TagsBox";
+import Post  from "./../components/Post"
 
-function UserPage(props) {
+export default function UserPage() {
+  const [posts, setPosts] = useState([]);
+  const { id } = useParams();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        axios
+          .get(`https://projeto17-linkr-back-end.herokuapp.com/user/${id}`)
+          .then((response) => {
+            const { data } = response;
+            setPosts(data);
+          })
+          .catch((e) => console.log(e));
+      } catch (e) {
+        alert("Erro ao receber dados dos posts");
+        console.log(e.response);
+      }
+    })();
+  }, [id]);
+
   return (
     <>
       <Header />
@@ -12,15 +36,13 @@ function UserPage(props) {
           <h1># Juvenal Juvencio's posts</h1>
         </Topo>
         <Container>
-          <Posts></Posts>
+          <Posts>{posts ? posts.map((post) => Post(post)) : <Loading />}</Posts>
           <TrendingTags />
         </Container>
       </Main>
     </>
   );
 }
-
-export default UserPage;
 
 const Main = styled.main`
   display: flex;
@@ -63,8 +85,18 @@ const Container = styled.div`
 
 const Posts = styled.div`
   width: 613px;
-  height: 100vh;
+  height: auto;
   display: flex;
   justify-content: center;
   margin-right: 25px;
+`;
+
+const Loading = styled.div`
+  animation: is-rotating 1s infinite;
+  width: 25px;
+  height: 25px;
+  border: 4px solid #1877f2;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  margin-left: 300px;
 `;
