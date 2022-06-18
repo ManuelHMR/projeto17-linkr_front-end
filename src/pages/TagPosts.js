@@ -1,24 +1,28 @@
 import styled from "styled-components";
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useParams } from "react-router-dom"
+import { useParams } from "react-router-dom";
 
 import Header from "./../components/Header";
 import TrendingTags from "./../components/TagsBox";
-import Post  from "./../components/Post"
+import Post from "./../components/Post";
 
 export default function TagPage() {
   const [posts, setPosts] = useState([]);
-  const {hashtag} = useParams();
+  const { hashtag } = useParams();
 
   useEffect(() => {
     (async () => {
       try {
-        axios.get(`https://projeto17-linkr-back-end.herokuapp.com/hashtag/${hashtag}`)
+        axios
+          .get(
+            `https://projeto17-linkr-back-end.herokuapp.com/hashtag/${hashtag}`
+          )
           .then((response) => {
             const { data } = response;
             setPosts(data);
-          }).catch(e => console.log(e));
+          })
+          .catch((e) => console.log(e));
       } catch (e) {
         alert("Erro ao receber dados dos posts");
         console.log(e.response);
@@ -34,19 +38,7 @@ export default function TagPage() {
           <h1># {hashtag}</h1>
         </Topo>
         <Container>
-          <Posts>
-          {posts?(
-          posts.map((post) => {
-            const { url, text } = post;
-                return (
-                    <Post
-                    url={url}
-                    text={text}
-                    />
-                );
-              })
-              ): <Loading />}
-          </Posts>
+          <Posts>{posts ? posts.map((post) => Post(post)) : <Loading />}</Posts>
           <TrendingTags />
         </Container>
       </Main>
