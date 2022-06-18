@@ -1,22 +1,37 @@
 import styled from "styled-components";
+import urlMetadata from "url-metadata";
 
-export default function Post(){
-    return(
+export default function Post(infos) {
+    const { username, url, pictureURL, text } = infos;
+    metadata(url);
+    return (
         <PostContainer>
-            <img></img>
+            <img src={pictureURL} alt="Foto de perfil"></img>
             <PostInfos>
-                <h4>Juvenal Juvêncio</h4>
-                <p>Muito maneiro esse tutorial de Material UI com React, deem uma olhada! #react #material</p>
+                <h4>{username}</h4>
+                <p>{text}</p>
+                <Link>
+                    <div>
+                        <h5>Como aplicar o Material UI em um projeto React</h5>
+                        <p>Hey! I have moved this tutorial to my personal blog. Same content, new location. Sorry about making you click through to another page.</p>
+                        <p>{url}</p>
+                    </div>
+                    <img src={pictureURL} alt="Foto de perfil"></img>
+                </Link>
             </PostInfos>
         </PostContainer>
     )
+}
+
+function metadata(url) {
+    urlMetadata("http://bit.ly/2ePIrDy").then((result) => console.log(result));
 }
 
 
 
 
 const PostContainer = styled.div`
-    width: 575px;
+    width: 611px;
     height: auto;
     padding: 17px 18px;
     background: #171717;
@@ -47,5 +62,43 @@ const PostInfos = styled.div`
     p{
         color: #B7B7B7;
         padding-right: 30px;
+    }
+`
+
+const Link = styled.div`
+    height: 155px;
+    width: 503px;
+    border: 1px solid #4D4D4D;
+    border-radius: 11px;
+    margin: 20px 0 10px 0;
+    font-family: 'Lato', sans-serif;
+    font-weight: 400;
+    position: relative;
+
+    div{
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        margin-left: 20px;
+    }
+    p{
+        font-size: 11px;
+        margin-bottom: 13px;
+
+    }
+    h5{
+
+        font-size:  16px;
+        margin-top: 24px;
+        margin-bottom: 5px;
+    }
+    img{
+        border-radius: 0px 9px 13px 0px;
+        width: 153.44px;
+        height: 155px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 0;
     }
 `
