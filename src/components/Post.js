@@ -3,24 +3,23 @@ import urlMetadata from "url-metadata";
 import ReactTooltip from "react-tooltip";
 import ReactModal from "react-modal";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Post(infos) {
-  const { username, url, pictureURL, text } = infos;
-  let id = 1;
+  const { id, username, url, pictureURL, text } = infos;
+  let postId = 1;
   const [liked, setLiked] = useState(false);
   const URL = "https://projeto17-linkr-back-end.herokuapp.com/";
   const token = localStorage.getItem("token");
   metadata(url);
 
-
   function likePost() {
-    
     let newURL = URL;
     if (!liked) {
-      newURL = URL + "like/" + id;
+      newURL = URL + "like/" + postId;
     } else {
-      newURL = URL + "dislike/" + id;
+      newURL = URL + "dislike/" + postId;
     }
     setLiked(!liked);
     console.log(newURL);
@@ -36,7 +35,9 @@ export default function Post(infos) {
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
       <PostInfos>
-        <h4>{username}</h4>
+        <Link to={`/user/${id}`} key={id}>
+          <h4>{username}</h4>
+        </Link>
         <p>{text}</p>
         <Link>
           <div>

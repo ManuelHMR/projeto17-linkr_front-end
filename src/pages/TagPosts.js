@@ -8,6 +8,7 @@ import TrendingTags from "./../components/TagsBox";
 import Post from "./../components/Post";
 
 export default function TagPage() {
+  const token = localStorage.getItem("token");
   const [posts, setPosts] = useState([]);
   const { hashtag } = useParams();
 
@@ -15,9 +16,9 @@ export default function TagPage() {
     (async () => {
       try {
         axios
-          .get(
-            `https://projeto17-linkr-back-end.herokuapp.com/hashtag/${hashtag}`
-          )
+          .get(`https://projeto17-linkr-back-end.herokuapp.com/hashtag/${hashtag}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
           .then((response) => {
             const { data } = response;
             setPosts(data);
