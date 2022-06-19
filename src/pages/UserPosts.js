@@ -8,6 +8,7 @@ import TrendingTags from "../components/TagsBox";
 import Post  from "./../components/Post"
 
 export default function UserPage() {
+  const token = localStorage.getItem("token");
   const [posts, setPosts] = useState([]);
   const { id } = useParams();
 
@@ -15,7 +16,9 @@ export default function UserPage() {
     (async () => {
       try {
         axios
-          .get(`https://projeto17-linkr-back-end.herokuapp.com/user/${id}`)
+          .get(`https://projeto17-linkr-back-end.herokuapp.com/user/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
           .then((response) => {
             const { data } = response;
             setPosts(data);

@@ -2,12 +2,13 @@ import styled from "styled-components";
 import urlMetadata from "url-metadata";
 import ReactTooltip from "react-tooltip";
 import ReactModal from "react-modal";
+import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Post(infos) {
-  const { username, url, pictureURL, text } = infos;
-  let id = 1;
+  const { id, username, url, pictureURL, text } = infos;
+  let postId = 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
     likesUsers: [{ username: "Você" }, { username: "Fulano" }],
@@ -21,7 +22,7 @@ export default function Post(infos) {
 
   useEffect(() => {
     axios
-      .get(`${URL}/likes/${id}`, {
+      .get(`${URL}/likes/${postId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -61,9 +62,9 @@ export default function Post(infos) {
   function likePost() {
     let newURL = URL;
     if (!likesInfo.liked) {
-      newURL = URL + "/like/" + id;
+      newURL = URL + "/like/" + postId;
     } else {
-      newURL = URL + "/dislike/" + id;
+      newURL = URL + "/dislike/" + postId;
     }
     setLikesInfo({ ...likesInfo, liked: !likesInfo.liked });
     console.log(newURL);
@@ -79,9 +80,11 @@ export default function Post(infos) {
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
       <PostInfos>
-        <h4>{username}</h4>
+        <Link to={`/user/${id}`} key={id}>
+          <h4>{username}</h4>
+        </Link>
         <p>{text}</p>
-        <Link>
+        <LinkBox>
           <div>
             <h5>Como aplicar o Material UI em um projeto React</h5>
             <p>
@@ -92,7 +95,7 @@ export default function Post(infos) {
             <p>{url}</p>
           </div>
           <img src={pictureURL} alt="Foto de perfil"></img>
-        </Link>
+        </LinkBox>
       </PostInfos>
       <Icons>
         <ion-icon name="create"></ion-icon>
@@ -151,7 +154,7 @@ const PostInfos = styled.div`
   }
 `;
 
-const Link = styled.div`
+const LinkBox = styled.div`
   height: 155px;
   width: 503px;
   border: 1px solid #4d4d4d;
