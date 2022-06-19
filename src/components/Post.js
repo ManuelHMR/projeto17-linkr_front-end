@@ -39,7 +39,7 @@ export default function Post(infos) {
           <h4>{username}</h4>
         </Link>
         <p>{text}</p>
-        <Link>
+        <LinkBox>
           <div>
             <h5>Como aplicar o Material UI em um projeto React</h5>
             <p>
@@ -50,7 +50,7 @@ export default function Post(infos) {
             <p>{url}</p>
           </div>
           <img src={pictureURL} alt="Foto de perfil"></img>
-        </Link>
+        </LinkBox>
       </PostInfos>
       <ion-icon name="trash"></ion-icon>
       <Heart onClick={likePost} liked={liked} data-tip="1000 curtidas">
@@ -112,7 +112,7 @@ const PostInfos = styled.div`
   }
 `;
 
-const Link = styled.div`
+const LinkBox = styled.div`
   height: 155px;
   width: 503px;
   border: 1px solid #4d4d4d;
