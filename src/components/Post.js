@@ -6,9 +6,11 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+//Modal.setAppElement(".icons");
+
 export default function Post(infos) {
   const { id, username, url, pictureURL, text } = infos;
-  let postId = 1;
+  let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
     likesUsers: [{ username: "Você" }, { username: "Fulano" }],
@@ -18,6 +20,12 @@ export default function Post(infos) {
   const URL = "https://projeto17-linkr-back-end.herokuapp.com";
   //const URL = "https://127.0.0.1:4000/";
   const token = localStorage.getItem("token");
+  const [isOpen, setIsOpen] = useState(false);
+
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
+
   metadata(url);
 
   useEffect(() => {
@@ -46,16 +54,14 @@ export default function Post(infos) {
       setInfoText(likesInfo.likesUsers[0].username + " curtiu este post");
     } else if (likesInfo.likes == 2) {
       setInfoText(
-        `${likesInfo.likesUsers[0].username} e ${
-          likesInfo.likesUsers[1].username
-        } curtiram este post`
+        `${likesInfo.likesUsers[0].username} e ${likesInfo.likesUsers[1].username} curtiram este post`
       );
     } else if (likesInfo.likes > 2) {
-        setInfoText(
-            `${likesInfo.likesUsers[0].username}, ${
-                likesInfo.likesUsers[1].username
-            } e outras ${likesInfo.likes * 1 - 2} pessoas`
-        );
+      setInfoText(
+        `${likesInfo.likesUsers[0].username}, ${
+          likesInfo.likesUsers[1].username
+        } e outras ${likesInfo.likes * 1 - 2} pessoas`
+      );
     }
   }, [likesInfo.likesUsers]);
 
@@ -74,6 +80,24 @@ export default function Post(infos) {
         console.log(response);
       })
       .catch((e) => console.log(e));
+  }
+
+  function deletePost() {
+    axios
+      .delete(`${URL}/posts/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        console.log(response);
+        window.location.reload();
+      })
+      .catch((e) => {
+        console.log(e);
+        alert("Erro ao deletar post");
+        toggleModal();
+      });
   }
 
   return (
@@ -97,9 +121,9 @@ export default function Post(infos) {
           <img src={pictureURL} alt="Foto de perfil"></img>
         </LinkBox>
       </PostInfos>
-      <Icons>
+      <Icons className="icons">
         <ion-icon name="create"></ion-icon>
-        <ion-icon name="trash"></ion-icon>
+        <ion-icon name="trash" onClick={toggleModal}></ion-icon>
       </Icons>
       <Heart onClick={likePost} liked={likesInfo.liked} data-tip={infoText}>
         {likesInfo.liked ? (
@@ -110,6 +134,55 @@ export default function Post(infos) {
         <p>{likesInfo.likes} likes</p>
       </Heart>
       <ReactTooltip place="bottom" type="light" effect="solid" />
+
+      <ReactModal
+        isOpen={isOpen}
+        onRequestClose={toggleModal}
+        contentLabel="Are you sure you want to delete this post?"
+        //className="mymodal"
+        //overlayClassName="myoverlay"
+        style={{
+          overlay: {
+            backgroundColor: "rgba(255, 255, 255, 0.85)",
+            zIndex: "10",
+            position: "fixed",
+            width: "100vw",
+            height: "100vh",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            flexDirection: "column",
+            textAlign: "center",
+            color: "white",
+          },
+          content: {
+            inset: "0px",
+            position: "relative",
+            backgroundColor: "#333333",
+            borderRadius: "5vh",
+            width: "40%",
+            height: "30%",
+            border: "none",
+            display: "flex",
+            justifyContent: "space-evenly",
+            alignItems: "center",
+            flexDirection: "column",
+            textAlign: "center",
+            fontWeight: "bold",
+            fontFamily: "sans-serif",
+            fontSize: "35px",
+            padding: "0 7%",
+          },
+        }}
+      >
+        <h1 className="deleteModal">
+          Are you sure you want to delete this post?
+        </h1>
+        <div className="buttons">
+          <button onClick={toggleModal}>No, go back</button>
+          <button onClick={deletePost}>Yes, delete it</button>
+        </div>
+      </ReactModal>
     </PostContainer>
   );
 }
