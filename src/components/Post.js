@@ -2,26 +2,71 @@ import styled from "styled-components";
 import urlMetadata from "url-metadata";
 import ReactTooltip from "react-tooltip";
 import ReactModal from "react-modal";
-import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Post(infos) {
   const { id, username, url, pictureURL, text } = infos;
   let postId = 1;
-  const [liked, setLiked] = useState(false);
-  const URL = "https://projeto17-linkr-back-end.herokuapp.com/";
+  const [infoText, setInfoText] = useState("ninguém curtiu este post");
+  const [likesInfo, setLikesInfo] = useState({
+    likesUsers: [{ username: "Você" }, { username: "Fulano" }],
+    liked: false,
+    likes: 0,
+  });
+  const URL = "https://projeto17-linkr-back-end.herokuapp.com";
+  //const URL = "https://127.0.0.1:4000/";
   const token = localStorage.getItem("token");
   metadata(url);
 
+  useEffect(() => {
+    axios
+      .get(`${URL}/likes/${postId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data) {
+          const info = res.data;
+          setLikesInfo(info);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [likesInfo.liked]);
+
+  useEffect(() => {
+    if (likesInfo.likes == 0) {
+      setInfoText("Ninguém curtiu este post");
+    } else if (likesInfo.likes == 1) {
+      setInfoText(likesInfo.likesUsers[0].username + " curtiu este post");
+    } else if (likesInfo.likes == 2) {
+      setInfoText(
+        `${likesInfo.likesUsers[0].username} e ${
+          likesInfo.likesUsers[1].username
+        } curtiram este post`
+      );
+    } else if (likesInfo.likes > 2) {
+        setInfoText(
+            `${likesInfo.likesUsers[0].username}, ${
+                likesInfo.likesUsers[1].username
+            } e outras ${likesInfo.likes * 1 - 2} pessoas`
+        );
+    }
+  }, [likesInfo.likesUsers]);
+
   function likePost() {
     let newURL = URL;
-    if (!liked) {
-      newURL = URL + "like/" + postId;
+    if (!likesInfo.liked) {
+      newURL = URL + "/like/" + postId;
     } else {
-      newURL = URL + "dislike/" + postId;
+      newURL = URL + "/dislike/" + postId;
     }
-    setLiked(!liked);
+    setLikesInfo({ ...likesInfo, liked: !likesInfo.liked });
     console.log(newURL);
     axios
       .post(newURL, {}, { headers: { Authorization: `Bearer ${token}` } })
@@ -52,14 +97,17 @@ export default function Post(infos) {
           <img src={pictureURL} alt="Foto de perfil"></img>
         </LinkBox>
       </PostInfos>
-      <ion-icon name="trash"></ion-icon>
-      <Heart onClick={likePost} liked={liked} data-tip="1000 curtidas">
-        {liked ? (
+      <Icons>
+        <ion-icon name="create"></ion-icon>
+        <ion-icon name="trash"></ion-icon>
+      </Icons>
+      <Heart onClick={likePost} liked={likesInfo.liked} data-tip={infoText}>
+        {likesInfo.liked ? (
           <ion-icon name="heart"></ion-icon>
         ) : (
           <ion-icon name="heart-outline"></ion-icon>
         )}
-        <p>1000 likes</p>
+        <p>{likesInfo.likes} likes</p>
       </Heart>
       <ReactTooltip place="bottom" type="light" effect="solid" />
     </PostContainer>
@@ -88,12 +136,6 @@ const PostContainer = styled.div`
     width: 50px;
     border-radius: 25px;
     margin-right: 18px;
-  }
-  & > ion-icon {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    size: 20px;
   }
 `;
 
@@ -159,7 +201,7 @@ const Heart = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  p{
+  p {
     margin-top: 5px;
     font-size: 11px;
   }
@@ -170,5 +212,18 @@ const Heart = styled.div`
   }
   :hover {
     cursor: pointer;
+  }
+`;
+
+const Icons = styled.div`
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  & > ion-icon {
+    font-size: 20px;
+    margin-left: 5px;
+    :hover {
+      cursor: pointer;
+    }
   }
 `;
