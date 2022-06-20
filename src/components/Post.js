@@ -9,7 +9,9 @@ import axios from "axios";
 //Modal.setAppElement(".icons");
 
 export default function Post(infos) {
+
   const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
+  let enableEdit = userId == 1;
   let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
@@ -194,10 +196,14 @@ export default function Post(infos) {
           </a>
         </LinkBox>
       </PostInfos>
-      <Icons className="icons">
-        <ion-icon name="create" onClick={toggleEditMode}></ion-icon>
-        <ion-icon name="trash" onClick={toggleModal}></ion-icon>
-      </Icons>
+      {enableEdit ? (
+        <Icons className="icons">
+          <ion-icon name="create" onClick={toggleEditMode}></ion-icon>
+          <ion-icon name="trash" onClick={toggleModal}></ion-icon>
+        </Icons>
+      ) : (
+        <></>
+      )}
       <Heart onClick={likePost} liked={likesInfo.liked} data-tip={infoText}>
         {likesInfo.liked ? (
           <ion-icon name="heart"></ion-icon>
