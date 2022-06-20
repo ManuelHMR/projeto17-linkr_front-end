@@ -9,7 +9,7 @@ import axios from "axios";
 //Modal.setAppElement(".icons");
 
 export default function Post(infos) {
-  const { id, username, url, pictureURL, text } = infos;
+  const { id, username, url, pictureURL, text, title, image, description } = infos;
   let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
@@ -167,15 +167,11 @@ export default function Post(infos) {
         </form>
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
-            <h5>Como aplicar o Material UI em um projeto React</h5>
-            <p>
-              Hey! I have moved this tutorial to my personal blog. Same content,
-              new location. Sorry about making you click through to another
-              page.
-            </p>
+            <h5>{title}</h5>
+            <p>{description}</p>
             <p>{url}</p>
+            <img src={image} alt="Imagem do Post"></img>
           </a>
-          <img src={pictureURL} alt="Imagem do Post"></img>
         </LinkBox>
       </PostInfos>
       <Icons className="icons">
