@@ -9,7 +9,8 @@ import axios from "axios";
 //Modal.setAppElement(".icons");
 
 export default function Post(infos) {
-  const { id, username, url, pictureURL, text, userId } = infos;
+
+  const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
   let enableEdit = userId == 1;
   let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
@@ -172,7 +173,7 @@ export default function Post(infos) {
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
       <PostInfos edit={editMode}>
-        <Link to={`/user/${id}`} key={id}>
+        <Link to={`/user/${userId}`} key={userId}>
           <h4>{username || "Anonymous"}</h4>
         </Link>
         <form onSubmit={editPost}>
@@ -188,15 +189,11 @@ export default function Post(infos) {
         </form>
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
-            <h5>Como aplicar o Material UI em um projeto React</h5>
-            <p>
-              Hey! I have moved this tutorial to my personal blog. Same content,
-              new location. Sorry about making you click through to another
-              page.
-            </p>
+            <h5>{title}</h5>
+            <p>{description}</p>
             <p>{url}</p>
+            <img src={image} alt="Imagem do Post"></img>
           </a>
-          <img src={pictureURL} alt="Imagem do Post"></img>
         </LinkBox>
       </PostInfos>
       {enableEdit ? (
