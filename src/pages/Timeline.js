@@ -40,7 +40,6 @@ export default function Timeline() {
           <Posts>
             <AllPosts>
               <NewPost></NewPost>
-              <Post></Post>
               {posts ? (
                 posts.length > 0 ? (
                   posts.map((post) => Post(post))

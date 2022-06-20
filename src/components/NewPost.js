@@ -2,33 +2,46 @@ import { useState } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
-export default function NewPost(){
+export default function NewPost() {
+    const [loading, setLoading] = useState(false);
     const [url, setUrl] = useState('');
     const [text, setText] = useState('');
     const token = localStorage.getItem('token');
 
-    function publishPost(e){
-
-        axios.post("https://projeto17-linkr-back-end.herokuapp.com/post", {url,text},{
+    function publishPost(e) {
+        setLoading(true);
+        e.preventDefault();
+        axios.post("https://projeto17-linkr-back-end.herokuapp.com/post", { url, text }, {
             headers: { Authorization: `Bearer ${token}` }
-        }).then(()=>{
+        }).then(() => {
             alert("Post publicado com sucesso");
-        }).catch((e)=>{
+            setLoading(false);
+            window.location.reload(false);
+        }).catch((e) => {
+            setLoading(false);
             console.log(e);
             alert("Houve um erro ao publicar seu link");
         });
     }
 
-    return(
+    return (
         <NewPostContainer>
             <img></img>
             <PublicationForm>
                 <h4>What are you going to share today?</h4>
-                <form onSubmit={publishPost}>
-                    <input type="url" placeholder="http://..." value={url} onChange={e => setUrl(e.target.value)} />
-                    <textarea type="text" placeholder="Awesome article about #javascript" value={text} onChange={e => setText(e.target.value)} />
-                    <button type="submit">Publish</button>
-                </form>
+                {loading ? (
+                    <form onSubmit={publishPost}>
+                        <input class='disabled' disabled type="url" placeholder="http://..." value={url} onChange={e => setUrl(e.target.value)} />
+                        <textarea class='disabled' disabled type="text" placeholder="Awesome article about #javascript" value={text} onChange={e => setText(e.target.value)} />
+                        <button class='disabled' disabled >Publishing...</button>
+                    </form>
+                ) : (
+                    <form onSubmit={publishPost}>
+                        <input type="url" placeholder="http://..." value={url} onChange={e => setUrl(e.target.value)} />
+                        <textarea type="text" placeholder="Awesome article about #javascript" value={text} onChange={e => setText(e.target.value)} />
+                        <button type='submit'>Publish</button>
+                    </form>
+                )}
             </PublicationForm>
         </NewPostContainer>
     )
@@ -65,6 +78,10 @@ const PublicationForm = styled.div`
     form{
         display: flex;
         flex-direction: column;
+
+        .disabled{
+            opacity: 0.7;
+        }
 
         input,
         textarea{

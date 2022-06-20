@@ -58,8 +58,7 @@ export default function Post(infos) {
       );
     } else if (likesInfo.likes > 2) {
       setInfoText(
-        `${likesInfo.likesUsers[0].username}, ${
-          likesInfo.likesUsers[1].username
+        `${likesInfo.likesUsers[0].username}, ${likesInfo.likesUsers[1].username
         } e outras ${likesInfo.likes * 1 - 2} pessoas`
       );
     }
@@ -109,7 +108,7 @@ export default function Post(infos) {
         </Link>
         <p>{text}</p>
         <LinkBox>
-          <div>
+          <a href={url} target="_blank" rel="noopener noreferrer">
             <h5>Como aplicar o Material UI em um projeto React</h5>
             <p>
               Hey! I have moved this tutorial to my personal blog. Same content,
@@ -117,7 +116,7 @@ export default function Post(infos) {
               page.
             </p>
             <p>{url}</p>
-          </div>
+          </a>
           <img src={pictureURL} alt="Foto de perfil"></img>
         </LinkBox>
       </PostInfos>
@@ -237,7 +236,12 @@ const LinkBox = styled.div`
   font-weight: 400;
   position: relative;
 
-  div {
+  a:link { text-decoration: none; }
+  a:visited { text-decoration: none; }
+  a:hover { text-decoration: none; }
+  a:active { text-decoration: none; }
+
+  a {
     width: 300px;
     display: flex;
     flex-direction: column;
