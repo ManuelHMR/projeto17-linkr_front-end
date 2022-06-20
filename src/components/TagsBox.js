@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 export default function TrendingTags() {
+  const token = localStorage.getItem("token");
   const [trendings, setTrendings] = useState();
 
   useEffect(() => {
@@ -99,5 +100,5 @@ const Loading = styled.div`
   border: 4px solid #1877f2;
   border-top-color: #ffffff;
   border-radius: 50%;
-  margin-left: 300px;
+  margin-left: 120px;
 `;

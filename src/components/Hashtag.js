@@ -1,4 +1,4 @@
-import ReactHashtag from "react-hashtag";
+import ReactHashtag from "@mdnm/react-hashtag";
 import styled from "styled-components";
 
 const Hashtag = (props) => (

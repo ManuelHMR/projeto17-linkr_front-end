@@ -92,5 +92,4 @@ const Loading = styled.div`
   border: 4px solid #1877f2;
   border-top-color: #ffffff;
   border-radius: 50%;
-  margin-left: 300px;
 `;
