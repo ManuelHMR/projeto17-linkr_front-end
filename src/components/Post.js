@@ -6,7 +6,6 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-//Modal.setAppElement(".icons");
 
 export default function Post(infos) {
 
@@ -20,7 +19,6 @@ export default function Post(infos) {
     likes: 0,
   });
   const URL = "https://projeto17-linkr-back-end.herokuapp.com";
-  //const URL = "https://127.0.0.1:4000/";
   const token = localStorage.getItem("token");
   const [isOpen, setIsOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -99,6 +97,7 @@ export default function Post(infos) {
   }
 
   function deletePost() {
+    setLoading(true);
     axios
       .delete(`${URL}/posts/${postId}`, {
         headers: {
@@ -107,12 +106,14 @@ export default function Post(infos) {
       })
       .then((response) => {
         console.log(response);
+        setLoading(false);
         window.location.reload();
       })
       .catch((e) => {
         console.log(e);
         alert("Erro ao deletar post");
         toggleModal();
+        setLoading(false);
       });
   }
 
@@ -123,7 +124,6 @@ export default function Post(infos) {
   const inputRef = useRef(null);
 
   window.addEventListener("keyup", function (event) {
-    // If the user presses the "Enter" key on the keyboard
     if (editMode) {
       if (event.key === "Enter") {
         event.preventDefault();
@@ -218,8 +218,6 @@ export default function Post(infos) {
         isOpen={isOpen}
         onRequestClose={toggleModal}
         contentLabel="Are you sure you want to delete this post?"
-        //className="mymodal"
-        //overlayClassName="myoverlay"
         style={{
           overlay: {
             backgroundColor: "rgba(255, 255, 255, 0.85)",
@@ -262,6 +260,14 @@ export default function Post(infos) {
           <button onClick={deletePost}>Yes, delete it</button>
         </div>
       </ReactModal>
+      {loading ? (
+        <Loading>
+          <ion-icon name="cloud-upload"></ion-icon>
+          Carregando ...
+        </Loading>
+      ) : (
+        <></>
+      )}
     </PostContainer>
   );
 }
@@ -402,4 +408,19 @@ const Icons = styled.div`
       cursor: pointer;
     }
   }
+`;
+
+const Loading = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgba(200, 200, 255, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  font-size: 27px;
 `;
