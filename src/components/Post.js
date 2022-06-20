@@ -3,13 +3,14 @@ import urlMetadata from "url-metadata";
 import ReactTooltip from "react-tooltip";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-//Modal.setAppElement(".icons");
 
 export default function Post(infos) {
-  const { id, username, url, pictureURL, text } = infos;
+
+  const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
+  let enableEdit = userId == 1;
   let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
@@ -18,12 +19,25 @@ export default function Post(infos) {
     likes: 0,
   });
   const URL = "https://projeto17-linkr-back-end.herokuapp.com";
-  //const URL = "https://127.0.0.1:4000/";
   const token = localStorage.getItem("token");
   const [isOpen, setIsOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [postText, setPostText] = useState(
+    text ||
+      "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+  );
 
   function toggleModal() {
     setIsOpen(!isOpen);
+  }
+
+  function toggleEditMode() {
+    setEditMode(!editMode);
+    setPostText(
+      text ||
+        "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+    );
   }
 
   metadata(url);
@@ -58,7 +72,8 @@ export default function Post(infos) {
       );
     } else if (likesInfo.likes > 2) {
       setInfoText(
-        `${likesInfo.likesUsers[0].username}, ${likesInfo.likesUsers[1].username
+        `${likesInfo.likesUsers[0].username}, ${
+          likesInfo.likesUsers[1].username
         } e outras ${likesInfo.likes * 1 - 2} pessoas`
       );
     }
@@ -82,6 +97,7 @@ export default function Post(infos) {
   }
 
   function deletePost() {
+    setLoading(true);
     axios
       .delete(`${URL}/posts/${postId}`, {
         headers: {
@@ -90,40 +106,104 @@ export default function Post(infos) {
       })
       .then((response) => {
         console.log(response);
+        setLoading(false);
         window.location.reload();
       })
       .catch((e) => {
         console.log(e);
         alert("Erro ao deletar post");
         toggleModal();
+        setLoading(false);
       });
   }
 
+  function editPost(e) {
+    setLoading(true);
+    e.preventDefault();
+  }
+  const inputRef = useRef(null);
+
+  window.addEventListener("keyup", function (event) {
+    if (editMode) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setLoading(true);
+        axios
+          .put(
+            `${URL}/post/${postId}`,
+            { text: postText },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+            setLoading(false);
+            setEditMode(false);
+          })
+          .catch((e) => {
+            console.log(e);
+            alert("Erro ao editar post");
+            setLoading(false);
+          });
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        toggleEditMode();
+      }
+    }
+  });
+
+  useEffect(() => {
+    if (editMode) {
+      inputRef.current.focus();
+      var el = document.querySelector(".postText");
+      el.focus();
+      if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+      } else if (typeof el.createTextRange != "undefined") {
+        var range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+      }
+    }
+  }, [editMode]);
   return (
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
-      <PostInfos>
-        <Link to={`/user/${id}`} key={id}>
-          <h4>{username}</h4>
+      <PostInfos edit={editMode}>
+        <Link to={`/user/${userId}`} key={userId}>
+          <h4>{username || "Anonymous"}</h4>
         </Link>
-        <p>{text}</p>
+        <form onSubmit={editPost}>
+          <textarea
+            className="postText"
+            ref={inputRef}
+            placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+            onChange={(e) => setPostText(e.target.value)}
+            value={postText}
+            required
+            disabled={!editMode}
+          ></textarea>
+        </form>
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
-            <h5>Como aplicar o Material UI em um projeto React</h5>
-            <p>
-              Hey! I have moved this tutorial to my personal blog. Same content,
-              new location. Sorry about making you click through to another
-              page.
-            </p>
+            <h5>{title}</h5>
+            <p>{description}</p>
             <p>{url}</p>
+            <img src={image} alt="Imagem do Post"></img>
           </a>
-          <img src={pictureURL} alt="Foto de perfil"></img>
         </LinkBox>
       </PostInfos>
-      <Icons className="icons">
-        <ion-icon name="create"></ion-icon>
-        <ion-icon name="trash" onClick={toggleModal}></ion-icon>
-      </Icons>
+      {enableEdit ? (
+        <Icons className="icons">
+          <ion-icon name="create" onClick={toggleEditMode}></ion-icon>
+          <ion-icon name="trash" onClick={toggleModal}></ion-icon>
+        </Icons>
+      ) : (
+        <></>
+      )}
       <Heart onClick={likePost} liked={likesInfo.liked} data-tip={infoText}>
         {likesInfo.liked ? (
           <ion-icon name="heart"></ion-icon>
@@ -138,8 +218,6 @@ export default function Post(infos) {
         isOpen={isOpen}
         onRequestClose={toggleModal}
         contentLabel="Are you sure you want to delete this post?"
-        //className="mymodal"
-        //overlayClassName="myoverlay"
         style={{
           overlay: {
             backgroundColor: "rgba(255, 255, 255, 0.85)",
@@ -182,6 +260,14 @@ export default function Post(infos) {
           <button onClick={deletePost}>Yes, delete it</button>
         </div>
       </ReactModal>
+      {loading ? (
+        <Loading>
+          <ion-icon name="cloud-upload"></ion-icon>
+          Carregando ...
+        </Loading>
+      ) : (
+        <></>
+      )}
     </PostContainer>
   );
 }
@@ -224,6 +310,17 @@ const PostInfos = styled.div`
     color: #b7b7b7;
     padding-right: 30px;
   }
+  textarea {
+    width: 100%;
+    height: 100%;
+    background-color: ${(props) => (props.edit ? "white" : "transparent")};
+    color: ${(props) => (props.edit ? "black" : "white")};
+    font-size: 19px;
+    font-family: "Lato", sans-serif;
+    border: none;
+    resize: none;
+    border-radius: 5px;
+  }
 `;
 
 const LinkBox = styled.div`
@@ -236,10 +333,18 @@ const LinkBox = styled.div`
   font-weight: 400;
   position: relative;
 
-  a:link { text-decoration: none; }
-  a:visited { text-decoration: none; }
-  a:hover { text-decoration: none; }
-  a:active { text-decoration: none; }
+  a:link {
+    text-decoration: none;
+  }
+  a:visited {
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  a:active {
+    text-decoration: none;
+  }
 
   a {
     width: 300px;
@@ -273,7 +378,7 @@ const Heart = styled.div`
   margin-left: 18px;
   position: absolute;
   left: 0;
-  top: 60px;
+  bottom: 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -303,4 +408,19 @@ const Icons = styled.div`
       cursor: pointer;
     }
   }
+`;
+
+const Loading = styled.div`
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-color: rgba(200, 200, 255, 0.5);
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  font-size: 27px;
 `;
