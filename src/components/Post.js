@@ -5,6 +5,7 @@ import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import Hashtag from "./Hashtag";
 
 
 export default function Post(infos) {
@@ -177,15 +178,17 @@ export default function Post(infos) {
           <h4>{username || "Anonymous"}</h4>
         </Link>
         <form onSubmit={editPost}>
-          <textarea
-            className="postText"
-            ref={inputRef}
-            placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
-            onChange={(e) => setPostText(e.target.value)}
-            value={postText}
-            required
-            disabled={!editMode}
-          ></textarea>
+          <Hashtag>
+            <textarea
+              className="postText"
+              ref={inputRef}
+              placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+              onChange={(e) => setPostText(e.target.value)}
+              value={postText}
+              required
+              disabled={!editMode}
+            ></textarea>
+          </Hashtag>
         </form>
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
