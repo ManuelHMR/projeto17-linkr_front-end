@@ -1,13 +1,20 @@
 import styled from 'styled-components';
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
-
+import axios from 'axios';
+import {DebounceInput} from 'react-debounce-input';
 import {MdSearch} from "react-icons/md";
+
+const GETURL = "https://projeto17-linkr-back-end.herokuapp.com/userpic";
 
 export default function Header() {
     const navigate = useNavigate();
     const [selected, setSelected] = useState(false);
+    const [search, setSearch] = useState("");
+    const [profilePic, setProfilePic] = useState("")
     let ref = useRef();
+
+    let token = localStorage.getItem('token')
 
     function signOut(){
         localStorage.removeItem('token');
@@ -26,10 +33,22 @@ export default function Header() {
         }
     }, [selected]);
 
+    useEffect(() => {
+        axios.get(GETURL, { headers: { Authorization: `Bearer ${token}`}})
+            .then(res => {
+                const {pictureURL} = res.data
+                console.log(pictureURL)
+                setProfilePic(pictureURL)
+            })
+            .catch(e => console.log(e))
+    }, [])
+
     return(
         <HeaderContainer>
             <h1>linkr</h1>
-            <Search type="text" placeholder="Search for people" />
+            <Search type="text" placeholder="Search for people">
+        
+            </Search>
             <UserImg ref={ref}>
                 {
                     selected ? 
@@ -42,7 +61,7 @@ export default function Header() {
                         :
                         <ion-icon name="chevron-down-outline" onClick={() => setSelected(!selected)}></ion-icon>
                 } 
-                <img onClick={() => setSelected(!selected)}></img>
+                <img src={profilePic} onClick={() => setSelected(!selected)} alt="profile"></img>
             </UserImg>
         </HeaderContainer>
     )
