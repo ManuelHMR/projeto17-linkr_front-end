@@ -10,7 +10,7 @@ import axios from "axios";
 export default function Post(infos) {
 
   const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
-  let enableEdit = userId == 1;
+  let enableEdit = userId == localStorage.getItem("userId");
   let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
