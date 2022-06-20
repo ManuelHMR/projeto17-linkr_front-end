@@ -3,7 +3,7 @@ import urlMetadata from "url-metadata";
 import ReactTooltip from "react-tooltip";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 //Modal.setAppElement(".icons");
@@ -21,9 +21,23 @@ export default function Post(infos) {
   //const URL = "https://127.0.0.1:4000/";
   const token = localStorage.getItem("token");
   const [isOpen, setIsOpen] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [postText, setPostText] = useState(
+    text ||
+      "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+  );
 
   function toggleModal() {
     setIsOpen(!isOpen);
+  }
+
+  function toggleEditMode() {
+    setEditMode(!editMode);
+    setPostText(
+      text ||
+        "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+    );
   }
 
   metadata(url);
@@ -99,14 +113,58 @@ export default function Post(infos) {
       });
   }
 
+  function editPost(e) {
+    setLoading(true);
+    e.preventDefault();
+  }
+  const inputRef = useRef(null);
+
+  window.addEventListener("keyup", function (event) {
+    // If the user presses the "Enter" key on the keyboard
+    if (editMode){
+        if (event.key === "Enter") {
+          event.preventDefault();
+          toggleEditMode();
+        }
+        else if (event.key === "Escape") {
+          event.preventDefault();
+          toggleEditMode();
+        }
+    }
+  });
+
+  useEffect(() => {
+    if (editMode) {
+      inputRef.current.focus();
+      var el = document.querySelector(".postText");
+      el.focus();
+      if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+      } else if (typeof el.createTextRange != "undefined") {
+        var range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+      }
+    }
+  }, [editMode]);
   return (
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
-      <PostInfos>
+      <PostInfos edit={editMode}>
         <Link to={`/user/${id}`} key={id}>
-          <h4>{username}</h4>
+          <h4>{username || "Anonymous"}</h4>
         </Link>
-        <p>{text}</p>
+        <form onSubmit={editPost}>
+          <textarea
+            className="postText"
+            ref={inputRef}
+            placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+            onChange={(e) => setPostText(e.target.value)}
+            value={postText}
+            required
+            disabled={!editMode}
+          ></textarea>
+        </form>
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
             <h5>Como aplicar o Material UI em um projeto React</h5>
@@ -117,11 +175,11 @@ export default function Post(infos) {
             </p>
             <p>{url}</p>
           </a>
-          <img src={pictureURL} alt="Foto de perfil"></img>
+          <img src={pictureURL} alt="Imagem do Post"></img>
         </LinkBox>
       </PostInfos>
       <Icons className="icons">
-        <ion-icon name="create"></ion-icon>
+        <ion-icon name="create" onClick={toggleEditMode}></ion-icon>
         <ion-icon name="trash" onClick={toggleModal}></ion-icon>
       </Icons>
       <Heart onClick={likePost} liked={likesInfo.liked} data-tip={infoText}>
@@ -224,6 +282,17 @@ const PostInfos = styled.div`
     color: #b7b7b7;
     padding-right: 30px;
   }
+  textarea {
+    width: 100%;
+    height: 100%;
+    background-color: ${(props) => (props.edit ? "white" : "transparent")};
+    color: ${(props) => (props.edit ? "black" : "white")};
+    font-size: 19px;
+    font-family: "Lato", sans-serif;
+    border: none;
+    resize: none;
+    border-radius: 5px;
+  }
 `;
 
 const LinkBox = styled.div`
@@ -273,7 +342,7 @@ const Heart = styled.div`
   margin-left: 18px;
   position: absolute;
   left: 0;
-  top: 60px;
+  bottom: 140px;
   display: flex;
   flex-direction: column;
   justify-content: center;
