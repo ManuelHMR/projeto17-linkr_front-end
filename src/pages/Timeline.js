@@ -40,7 +40,8 @@ export default function Timeline() {
           <Posts>
             <AllPosts>
               <NewPost></NewPost>
-              {posts ? (
+              <Post></Post>
+              {/* {posts ? (
                 posts.length > 0 ? (
                   posts.map((post) => Post(post))
                 ) : (
@@ -48,7 +49,7 @@ export default function Timeline() {
                 )
               ) : (
                 <div className="loading" />
-              )}
+              )} */}
             </AllPosts>
           </Posts>
           <TrendingTags />
