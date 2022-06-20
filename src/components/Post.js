@@ -72,7 +72,8 @@ export default function Post(infos) {
       );
     } else if (likesInfo.likes > 2) {
       setInfoText(
-        `${likesInfo.likesUsers[0].username}, ${likesInfo.likesUsers[1].username
+        `${likesInfo.likesUsers[0].username}, ${
+          likesInfo.likesUsers[1].username
         } e outras ${likesInfo.likes * 1 - 2} pessoas`
       );
     }
@@ -121,15 +122,34 @@ export default function Post(infos) {
 
   window.addEventListener("keyup", function (event) {
     // If the user presses the "Enter" key on the keyboard
-    if (editMode){
-        if (event.key === "Enter") {
-          event.preventDefault();
-          toggleEditMode();
-        }
-        else if (event.key === "Escape") {
-          event.preventDefault();
-          toggleEditMode();
-        }
+    if (editMode) {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        setLoading(true);
+        axios
+          .put(
+            `${URL}/post/${postId}`,
+            { text: postText },
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          )
+          .then((response) => {
+            console.log(response);
+            setLoading(false);
+            setEditMode(false);
+          })
+          .catch((e) => {
+            console.log(e);
+            alert("Erro ao editar post");
+            setLoading(false);
+          });
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        toggleEditMode();
+      }
     }
   });
 
@@ -301,10 +321,18 @@ const LinkBox = styled.div`
   font-weight: 400;
   position: relative;
 
-  a:link { text-decoration: none; }
-  a:visited { text-decoration: none; }
-  a:hover { text-decoration: none; }
-  a:active { text-decoration: none; }
+  a:link {
+    text-decoration: none;
+  }
+  a:visited {
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: none;
+  }
+  a:active {
+    text-decoration: none;
+  }
 
   a {
     width: 300px;
