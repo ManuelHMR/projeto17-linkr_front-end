@@ -9,7 +9,7 @@ import axios from "axios";
 //Modal.setAppElement(".icons");
 
 export default function Post(infos) {
-  const { id, username, url, pictureURL, text, title, image, description } = infos;
+  const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
   let postId = id || 1;
   const [infoText, setInfoText] = useState("ninguém curtiu este post");
   const [likesInfo, setLikesInfo] = useState({
@@ -171,7 +171,7 @@ export default function Post(infos) {
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
       <PostInfos edit={editMode}>
-        <Link to={`/user/${id}`} key={id}>
+        <Link to={`/user/${userId}`} key={userId}>
           <h4>{username || "Anonymous"}</h4>
         </Link>
         <form onSubmit={editPost}>
