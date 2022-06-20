@@ -6,7 +6,7 @@ import {DebounceInput} from 'react-debounce-input';
 import {MdSearch} from "react-icons/md";
 
 const GETURL = "https://projeto17-linkr-back-end.herokuapp.com/userpic";
-const SEARCH_URL = "http://127.0.0.1:4000/search-user"
+const SEARCH_URL = "https://projeto17-linkr-back-end.herokuapp.com/search-user"
 
 export default function Header() {
     const navigate = useNavigate();
