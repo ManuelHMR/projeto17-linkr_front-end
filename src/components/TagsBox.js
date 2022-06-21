@@ -69,6 +69,9 @@ const Box = styled.div`
     margin-bottom: 14px;
     margin-left: 16px;
   }
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const Tags = styled.div`
@@ -91,6 +94,9 @@ const Tags = styled.div`
     color: #ffffff;
     margin: 15px 0px;
   }
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;
 
 const Loading = styled.div`
@@ -101,4 +107,7 @@ const Loading = styled.div`
   border-top-color: #ffffff;
   border-radius: 50%;
   margin-left: 120px;
+  @media (max-width: 1000px) {
+    display: none;
+  }
 `;
