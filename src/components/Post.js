@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import urlMetadata from "url-metadata";
 import ReactTooltip from "react-tooltip";
 import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
@@ -8,7 +7,7 @@ import axios from "axios";
 import Hashtag from "./Hashtag";
 
 
-export default function Post(infos) {
+export default function Post({infos}) {
 
   const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
   let enableEdit = userId == localStorage.getItem("userId");
@@ -26,7 +25,8 @@ export default function Post(infos) {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postText, setPostText] = useState(
-    <Hashtag>{text}</Hashtag> ||
+    // <Hashtag>{text}</Hashtag> 
+    text ||
       "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
 
@@ -41,8 +41,6 @@ export default function Post(infos) {
         "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
     );
   }
-
-  metadata(url);
 
   useEffect(() => {
     axios
@@ -179,7 +177,7 @@ export default function Post(infos) {
           <h4>{username || "Anonymous"}</h4>
         </Link>
         <form onSubmit={editPost}>
-          <Hashtag>
+          {/* <Hashtag> */}
             <textarea
               className="postText"
               ref={inputRef}
@@ -189,7 +187,7 @@ export default function Post(infos) {
               required
               disabled={!editMode}
             ></textarea>
-          </Hashtag>
+          {/* </Hashtag> */}
         </form>
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
@@ -276,9 +274,6 @@ export default function Post(infos) {
   );
 }
 
-function metadata(url) {
-  urlMetadata("http://bit.ly/2ePIrDy").then((result) => console.log(result));
-}
 
 const PostContainer = styled.div`
   position: relative;
