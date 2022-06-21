@@ -29,7 +29,7 @@ export default function TagPage() {
         console.log(e.response);
       }
     })();
-  }, [hashtag]);
+  }, [hashtag, token]);
 
   return (
     <>
@@ -67,6 +67,15 @@ const Topo = styled.div`
     color: #ffffff;
     margin-top: 53px;
     margin-bottom: 41px;
+
+    @media (max-width: 1000px) {
+      margin-left: 17px;
+      h1 {
+        font-size: 33px;
+        line-height: 48.91px;
+        margin: 19px 0px;
+      }
+    }
   }
 `;
 
@@ -83,6 +92,12 @@ const Posts = styled.div`
   display: flex;
   justify-content: center;
   margin-right: 25px;
+
+  @media (max-width: 1000px) {
+    width: 375px;
+    height: 232px;
+    margin: 0px 0px;
+  }
 `;
 
 const Loading = styled.div`
@@ -92,5 +107,4 @@ const Loading = styled.div`
   border: 4px solid #1877f2;
   border-top-color: #ffffff;
   border-radius: 50%;
-  margin-left: 300px;
 `;

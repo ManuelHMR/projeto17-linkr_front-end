@@ -1,21 +1,48 @@
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
-export default function TrendingTags(props) {
+export default function TrendingTags() {
+  const token = localStorage.getItem("token");
+  const [trendings, setTrendings] = useState();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        axios
+          .get(`https://projeto17-linkr-back-end.herokuapp.com/trending`, {
+            headers: { Authorization: `Bearer ${token}` },
+          })
+          .then((response) => {
+            const { data } = response;
+            setTrendings(data);
+          })
+          .catch((e) => console.log(e));
+      } catch (e) {
+        alert("Erro ao receber tags em trending");
+        console.log(e.response);
+      }
+    })();
+  }, []);
+
   return (
     <>
       <Box>
         <h1>trending</h1>
         <Tags>
-          <p># javascript</p>
-          <p># react</p>
-          <p># react-native</p>
-          <p># material</p>
-          <p># web-dev</p>
-          <p># mobile</p>
-          <p># css</p>
-          <p># html</p>
-          <p># node</p>
-          <p># sql</p>
+          {trendings ? (
+            trendings.map((trending) => {
+              const { hashtag } = trending;
+              return (
+                <Link to={`/hashtag/${hashtag}`} key={hashtag}>
+                  <p># {hashtag}</p>
+                </Link>
+              );
+            })
+          ) : (
+            <Loading />
+          )}
         </Tags>
       </Box>
     </>
@@ -33,7 +60,7 @@ const Box = styled.div`
   h1 {
     font-size: 25px;
     font-weight: 700;
-    font-family: 'Oswald', sans-serif;
+    font-family: "Oswald", sans-serif;
     font-style: normal;
     line-height: 25.01px;
     color: #ffffff;
@@ -41,6 +68,9 @@ const Box = styled.div`
     margin-top: 15px;
     margin-bottom: 14px;
     margin-left: 16px;
+  }
+  @media (max-width: 1000px) {
+    display: none;
   }
 `;
 
@@ -57,11 +87,27 @@ const Tags = styled.div`
   p {
     font-size: 19px;
     font-weight: 700;
-    font-family: 'Lato', sans-serif;
+    font-family: "Lato", sans-serif;
     font-style: normal;
     line-height: 0px;
     letter-spacing: 5%;
     color: #ffffff;
     margin: 15px 0px;
+  }
+  @media (max-width: 1000px) {
+    display: none;
+  }
+`;
+
+const Loading = styled.div`
+  animation: is-rotating 1s infinite;
+  width: 25px;
+  height: 25px;
+  border: 4px solid #1877f2;
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  margin-left: 120px;
+  @media (max-width: 1000px) {
+    display: none;
   }
 `;

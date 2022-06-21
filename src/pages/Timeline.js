@@ -79,6 +79,14 @@ const Topo = styled.div`
     margin-top: 53px;
     margin-bottom: 41px;
   }
+  @media (max-width: 1000px) {
+    margin-left: 17px;
+    h2 {
+      font-size: 33px;
+      line-height: 48.91px;
+      margin: 19px 0px;
+    }
+  }
 `;
 
 const Container = styled.div`
@@ -112,6 +120,11 @@ const Posts = styled.div`
     border-top-color: #ffffff;
     border-radius: 50%;
     margin-left: 300px;
+  }
+  @media (max-width: 1000px) {
+    width: 375px;
+    height: 232px;
+    margin: 0px 0px;
   }
 `;
 
