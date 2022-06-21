@@ -40,16 +40,15 @@ export default function Timeline() {
           <Posts>
             <AllPosts>
               <NewPost></NewPost>
-              <Post></Post>
-              {/* {posts ? (
+              {posts ? (
                 posts.length > 0 ? (
-                  posts.map((post) => Post(post))
+                  posts.map((post,index) => <Post key={index} infos={post} />)
                 ) : (
                   <p className="no-posts">There are no posts yet</p>
                 )
               ) : (
                 <div className="loading" />
-              )} */}
+              )}
             </AllPosts>
           </Posts>
           <TrendingTags />
