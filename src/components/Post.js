@@ -25,7 +25,8 @@ export default function Post({infos}) {
   const [editMode, setEditMode] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postText, setPostText] = useState(
-    // <Hashtag>{text}</Hashtag> ||
+    // <Hashtag>{text}</Hashtag> 
+    text ||
       "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
 
