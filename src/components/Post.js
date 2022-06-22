@@ -1,121 +1,52 @@
 import styled from "styled-components";
-import ReactTooltip from "react-tooltip";
-import ReactModal from "react-modal";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Hashtag from "./Hashtag";
+import EditIcons from "./EditIcons";
+import Like from "./Like";
+import DeleteModal from "./DeleteModal";
 
-
-export default function Post({infos}) {
-
-  const { id, username, url, pictureURL, userId, text, title, image, description } = infos;
-  let enableEdit = userId == localStorage.getItem("userId");
-  //enableEdit = userId || true;
+export default function Post({ infos }) {
+  const {
+    id,
+    username,
+    url,
+    pictureURL,
+    userId,
+    text,
+    title,
+    image,
+    description,
+  } = infos;
   let postId = id || 1;
-  const [infoText, setInfoText] = useState("ninguém curtiu este post");
-  const [likesInfo, setLikesInfo] = useState({
-    likesUsers: [{ username: "Você" }, { username: "Fulano" }],
-    liked: false,
-    likes: 0,
-  });
+
   const URL = "https://projeto17-linkr-back-end.herokuapp.com";
   const token = localStorage.getItem("token");
+  const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [postText, setPostText] = useState(
-    // <Hashtag>{text}</Hashtag> 
+    // <Hashtag>{text}</Hashtag>
     text ||
       "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
 
-  function toggleModal() {
-    setIsOpen(!isOpen);
-  }
-
-  function toggleEditMode() {
-    setEditMode(!editMode);
-    setPostText(
-      text ||
-        "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
-    );
-  }
-
   useEffect(() => {
-    axios
-      .get(`${URL}/likes/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          const info = res.data;
-          setLikesInfo(info);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [likesInfo.liked]);
-
-  useEffect(() => {
-    if (likesInfo.likes == 0) {
-      setInfoText("Ninguém curtiu este post");
-    } else if (likesInfo.likes == 1) {
-      setInfoText(likesInfo.likesUsers[0].username + " curtiu este post");
-    } else if (likesInfo.likes == 2) {
-      setInfoText(
-        `${likesInfo.likesUsers[0].username} e ${likesInfo.likesUsers[1].username} curtiram este post`
-      );
-    } else if (likesInfo.likes > 2) {
-      setInfoText(
-        `${likesInfo.likesUsers[0].username}, ${
-          likesInfo.likesUsers[1].username
-        } e outras ${likesInfo.likes * 1 - 2} pessoas`
-      );
+    if (editMode) {
+      inputRef.current.focus();
+      var el = document.querySelector(".postText");
+      el.focus();
+      if (typeof el.selectionStart == "number") {
+        el.selectionStart = el.selectionEnd = el.value.length;
+      } else if (typeof el.createTextRange != "undefined") {
+        var range = el.createTextRange();
+        range.collapse(false);
+        range.select();
+      }
     }
-  }, [likesInfo.likesUsers]);
+  }, [editMode]);
 
-  function likePost() {
-    let newURL = URL;
-    if (!likesInfo.liked) {
-      newURL = URL + "/like/" + postId;
-    } else {
-      newURL = URL + "/dislike/" + postId;
-    }
-    setLikesInfo({ ...likesInfo, liked: !likesInfo.liked });
-    console.log(newURL);
-    axios
-      .post(newURL, {}, { headers: { Authorization: `Bearer ${token}` } })
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((e) => console.log(e));
-  }
-
-  function deletePost() {
-    setLoading(true);
-    axios
-      .delete(`${URL}/posts/${postId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        console.log(response);
-        setLoading(false);
-        window.location.reload();
-      })
-      .catch((e) => {
-        console.log(e);
-        alert("Erro ao deletar post");
-        toggleModal();
-        setLoading(false);
-      });
-  }
 
   function editPost(e) {
     setLoading(true);
@@ -155,20 +86,18 @@ export default function Post({infos}) {
     }
   });
 
-  useEffect(() => {
-    if (editMode) {
-      inputRef.current.focus();
-      var el = document.querySelector(".postText");
-      el.focus();
-      if (typeof el.selectionStart == "number") {
-        el.selectionStart = el.selectionEnd = el.value.length;
-      } else if (typeof el.createTextRange != "undefined") {
-        var range = el.createTextRange();
-        range.collapse(false);
-        range.select();
-      }
-    }
-  }, [editMode]);
+  function toggleModal() {
+    setIsOpen(!isOpen);
+  }
+
+  function toggleEditMode() {
+    setEditMode(!editMode);
+    setPostText(
+      text ||
+        "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+    );
+  }
+
   return (
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
@@ -178,15 +107,15 @@ export default function Post({infos}) {
         </Link>
         <form onSubmit={editPost}>
           {/* <Hashtag> */}
-            <textarea
-              className="postText"
-              ref={inputRef}
-              placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
-              onChange={(e) => setPostText(e.target.value)}
-              value={postText}
-              required
-              disabled={!editMode}
-            ></textarea>
+          <textarea
+            className="postText"
+            ref={inputRef}
+            placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+            onChange={(e) => setPostText(e.target.value)}
+            value={postText}
+            required
+            disabled={!editMode}
+          ></textarea>
           {/* </Hashtag> */}
         </form>
         <LinkBox>
@@ -198,70 +127,13 @@ export default function Post({infos}) {
           </a>
         </LinkBox>
       </PostInfos>
-      {enableEdit ? (
-        <Icons className="icons">
-          <ion-icon name="create" onClick={toggleEditMode}></ion-icon>
-          <ion-icon name="trash" onClick={toggleModal}></ion-icon>
-        </Icons>
-      ) : (
-        <></>
-      )}
-      <Heart onClick={likePost} liked={likesInfo.liked} data-tip={infoText}>
-        {likesInfo.liked ? (
-          <ion-icon name="heart"></ion-icon>
-        ) : (
-          <ion-icon name="heart-outline"></ion-icon>
-        )}
-        <p>{likesInfo.likes} likes</p>
-      </Heart>
-      <ReactTooltip place="bottom" type="light" effect="solid" />
-
-      <ReactModal
-        isOpen={isOpen}
-        onRequestClose={toggleModal}
-        contentLabel="Are you sure you want to delete this post?"
-        style={{
-          overlay: {
-            backgroundColor: "rgba(255, 255, 255, 0.85)",
-            zIndex: "10",
-            position: "fixed",
-            width: "100vw",
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            flexDirection: "column",
-            textAlign: "center",
-            color: "white",
-          },
-          content: {
-            inset: "0px",
-            position: "relative",
-            backgroundColor: "#333333",
-            borderRadius: "5vh",
-            width: "40%",
-            height: "30%",
-            border: "none",
-            display: "flex",
-            justifyContent: "space-evenly",
-            alignItems: "center",
-            flexDirection: "column",
-            textAlign: "center",
-            fontWeight: "bold",
-            fontFamily: "sans-serif",
-            fontSize: "35px",
-            padding: "0 7%",
-          },
-        }}
-      >
-        <h1 className="deleteModal">
-          Are you sure you want to delete this post?
-        </h1>
-        <div className="buttons">
-          <button onClick={toggleModal}>No, go back</button>
-          <button onClick={deletePost}>Yes, delete it</button>
-        </div>
-      </ReactModal>
+      <EditIcons
+        infos={infos}
+        toggleModal={toggleModal}
+        toggleEditMode={toggleEditMode}
+      ></EditIcons>
+      <Like infos={infos}></Like>
+      <DeleteModal infos={infos} toggleModal={toggleModal} isOpen={isOpen} setLoading={setLoading} ></DeleteModal>
       {loading ? (
         <Loading>
           <ion-icon name="cloud-upload"></ion-icon>
@@ -273,7 +145,6 @@ export default function Post({infos}) {
     </PostContainer>
   );
 }
-
 
 const PostContainer = styled.div`
   position: relative;
@@ -368,44 +239,6 @@ const LinkBox = styled.div`
     right: 0;
     top: 0;
     margin: 0;
-  }
-`;
-
-const Heart = styled.div`
-  width: 50px;
-  height: 50px;
-  margin-left: 18px;
-  position: absolute;
-  left: 0;
-  bottom: 140px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  p {
-    margin-top: 5px;
-    font-size: 11px;
-  }
-
-  ion-icon {
-    font-size: 30px;
-    color: ${(props) => (props.liked ? "red" : "#FFFFFF")};
-  }
-  :hover {
-    cursor: pointer;
-  }
-`;
-
-const Icons = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 20px;
-  & > ion-icon {
-    font-size: 20px;
-    margin-left: 5px;
-    :hover {
-      cursor: pointer;
-    }
   }
 `;
 
