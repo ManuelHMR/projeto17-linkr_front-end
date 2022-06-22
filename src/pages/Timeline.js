@@ -26,7 +26,7 @@ export default function Timeline() {
             console.log(e.response);
           }
         })();
-    }, [setPosts]);
+    }, [setPosts, token]);
 
 
   return (
