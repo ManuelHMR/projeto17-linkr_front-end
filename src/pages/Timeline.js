@@ -10,10 +10,27 @@ import InfiniteScroll from "react-infinite-scroller";
 
 export default function Timeline() {
   const token = localStorage.getItem("token");
+
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageCount, setPageCount] = useState(0);
   const URL = "https://projeto17-linkr-back-end.herokuapp.com/posts";
+  
+    useEffect(() => {
+        (async () => {
+          try {
+            axios.get("https://projeto17-linkr-back-end.herokuapp.com/posts", {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+              .then((response) => {
+                setPosts(response.data);
+              }).catch(e => console.log(e));
+          } catch (e) {
+            alert("Erro ao receber dados dos posts");
+            console.log(e.response);
+          }
+        })();
+    }, [setPosts, token]);
 
   
   function getPosts() {

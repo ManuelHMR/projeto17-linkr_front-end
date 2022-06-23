@@ -5,7 +5,7 @@ import styled from "styled-components";
 
 export default function TrendingTags() {
   const token = localStorage.getItem("token");
-  const [trendings, setTrendings] = useState();
+  const [trendings, setTrendings] = useState([]);
 
   useEffect(() => {
     (async () => {
@@ -24,7 +24,7 @@ export default function TrendingTags() {
         console.log(e.response);
       }
     })();
-  }, []);
+  }, [token]);
 
   return (
     <>

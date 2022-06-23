@@ -29,7 +29,7 @@ export default function TagPage() {
         console.log(e.response);
       }
     })();
-  }, [hashtag, token]);
+  }, [setPosts, hashtag, token]);
 
   return (
     <>
@@ -39,7 +39,7 @@ export default function TagPage() {
           <h1># {hashtag}</h1>
         </Topo>
         <Container>
-          <Posts>{posts ? posts.map((post) => Post(post)) : <Loading />}</Posts>
+          <Posts>{posts ? posts.map((post,index) => <Post key={index} infos={post} />) : <Loading />}</Posts>
           <TrendingTags />
         </Container>
       </Main>
@@ -90,13 +90,16 @@ const Posts = styled.div`
   width: 613px;
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-right: 25px;
+  margin-top: 950px;
 
   @media (max-width: 1000px) {
     width: 375px;
     height: 232px;
     margin: 0px 0px;
+    margin-top: 735px;
   }
 `;
 
