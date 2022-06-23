@@ -9,6 +9,7 @@ import Post  from "./../components/Post"
 
 export default function UserPage() {
   const token = localStorage.getItem("token");
+  const [user, setUser] = useState("");
   const [posts, setPosts] = useState([]);
   const { id } = useParams();
 
@@ -21,7 +22,10 @@ export default function UserPage() {
         })
           .then((response) => {
             const { data } = response;
+            const { username } = data[0];
             setPosts(data);
+            setUser(username);
+            console.log(username);
           })
           .catch((e) => console.log(e));
       } catch (e) {
@@ -29,17 +33,17 @@ export default function UserPage() {
         console.log(e.response);
       }
     })();
-  }, [id, token]);
+  }, [setPosts, setUser, id, token]);
 
   return (
     <>
       <Header />
       <Main>
         <Topo>
-          <h1># Juvenal Juvencio's posts</h1>
+          <h1># {user}'s posts</h1>
         </Topo>
         <Container>
-          <Posts>{posts ? posts.map((post) => Post(post)) : <Loading />}</Posts>
+          <Posts>{posts ? posts.map((post,index) => <Post key={index} infos={post} />) : <Loading />}</Posts>
           <TrendingTags />
         </Container>
       </Main>
@@ -98,13 +102,16 @@ const Posts = styled.div`
   width: 613px;
   height: auto;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   margin-right: 25px;
+  margin-top: 950px;
   
   @media (max-width: 1000px) {
     width: 375px;
     height: 232px;
     margin: 0px 0px;
+    margin-top: 735px;
   }
 `;
 
