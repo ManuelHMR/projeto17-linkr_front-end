@@ -20,6 +20,7 @@ export default function Post({ infos }) {
     title,
     image,
     description,
+    repostUser
   } = infos;
   let postId = id || 1;
 
@@ -32,19 +33,19 @@ export default function Post({ infos }) {
   const [postText, setPostText] = useState(
     // <Hashtag>{text}</Hashtag>
     text ||
-      "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+    "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
   const [reposts, setReposts] = useState([]);
 
   useEffect(async () => {
-    try{
+    try {
       axios.get(`https://projeto17-linkr-back-end.herokuapp.com/reposts/${id}`)
-              .then(async (response) => {
-                await setReposts(response.data);
-              }).catch(e => console.log(e));
-          } catch (e) {
-            alert("Erro ao receber dados dos reposts");
-            console.log(e.response);
+        .then(async (response) => {
+          await setReposts(response.data);
+        }).catch(e => console.log(e));
+    } catch (e) {
+      alert("Erro ao receber dados dos reposts");
+      console.log(e.response);
     }
   }, [setReposts]);
 
@@ -113,73 +114,81 @@ export default function Post({ infos }) {
     setEditMode(!editMode);
     setPostText(
       text ||
-        "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+      "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
     );
   }
 
   return (
-    <PostContainer>
-      <img src={pictureURL} alt="Foto de perfil"></img>
-      <PostInfos edit={editMode}>
-        <Link to={`/user/${userId}`} key={userId}>
-          <h4>{username || "Anonymous"}</h4>
-        </Link>
-        {editMode ? (
-          <form onSubmit={editPost}>
-            <textarea
-              className="postText"
-              ref={inputRef}
-              placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
-              onChange={(e) => setPostText(e.target.value)}
-              value={postText}
-              required
-              disabled={!editMode}
-            ></textarea>
-          </form>
-        ) : (
-          <Hashtag>{postText}</Hashtag>
-        )}
-        <LinkBox>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            <h5>{title}</h5>
-            <p>{description}</p>
-            <p>{url}</p>
-            <img src={image} alt="Imagem do Post"></img>
-          </a>
-        </LinkBox>
-      </PostInfos>
-      <EditIcons
-        infos={infos}
-        toggleModal={toggleModal}
-        toggleEditMode={toggleEditMode}
-      ></EditIcons>
-      <Like infos={infos}></Like>
-      <Repost
-        infos={infos}
-        reposts={reposts}
-        toggleRepostModal={toggleRepostModal}
-        token = {token}/>
+    <>
+    {repostUser? (
+     <Repostedlook>
+       <ion-icon name="repeat"></ion-icon>
+      <p>Re-posted by <Link to={`/user/${repostUser}`} key={repostUser}>{repostUser}</Link></p>
+     </Repostedlook> 
+    ):(<></>)}
+      <PostContainer>
+        <img src={pictureURL} alt="Foto de perfil"></img>
+        <PostInfos edit={editMode}>
+          <Link to={`/user/${userId}`} key={userId}>
+            <h4>{username || "Anonymous"}</h4>
+          </Link>
+          {editMode ? (
+            <form onSubmit={editPost}>
+              <textarea
+                className="postText"
+                ref={inputRef}
+                placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+                onChange={(e) => setPostText(e.target.value)}
+                value={postText}
+                required
+                disabled={!editMode}
+              ></textarea>
+            </form>
+          ) : (
+            <Hashtag>{postText}</Hashtag>
+          )}
+          <LinkBox>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              <h5>{title}</h5>
+              <p>{description}</p>
+              <p>{url}</p>
+              <img src={image} alt="Imagem do Post"></img>
+            </a>
+          </LinkBox>
+        </PostInfos>
+        <EditIcons
+          infos={infos}
+          toggleModal={toggleModal}
+          toggleEditMode={toggleEditMode}
+        ></EditIcons>
+        <Like infos={infos}></Like>
+        <Repost
+          infos={infos}
+          reposts={reposts}
+          toggleRepostModal={toggleRepostModal}
+          token={token} />
         <RepostModal
-        infos={infos}
-        toggleRepostModal={toggleRepostModal}
-        repostModalBool={repostModalBool}
-        setLoading={setLoading}
-       />
-      <DeleteModal
-        infos={infos}
-        toggleModal={toggleModal}
-        isOpen={isOpen}
-        setLoading={setLoading}
-      ></DeleteModal>
-      {loading ? (
-        <Loading>
-          <ion-icon name="cloud-upload"></ion-icon>
-          Carregando ...
-        </Loading>
-      ) : (
-        <></>
-      )}
-    </PostContainer>
+          infos={infos}
+          toggleRepostModal={toggleRepostModal}
+          repostModalBool={repostModalBool}
+          setLoading={setLoading}
+        />
+        <DeleteModal
+          infos={infos}
+          toggleModal={toggleModal}
+          isOpen={isOpen}
+          setLoading={setLoading}
+        ></DeleteModal>
+        {loading ? (
+          <Loading>
+            <ion-icon name="cloud-upload"></ion-icon>
+            Carregando ...
+          </Loading>
+        ) : (
+          <></>
+        )}
+      </PostContainer>
+    </>
   );
 }
 
@@ -191,7 +200,7 @@ const PostContainer = styled.div`
   background: #171717;
   display: flex;
   border-radius: 16px;
-  margin: 8px 0;
+  margin: 0 0 8px 0;
   color: #ffffff;
   font-family: "Lato", sans-serif;
   font-weight: 300;
@@ -293,3 +302,30 @@ const Loading = styled.div`
   z-index: 20;
   font-size: 27px;
 `;
+
+const Repostedlook = styled.div`
+  heigth: 33px;
+  background: #1E1E1E;
+  color: #FFFFFF;
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-radius: 16px 16px 0 0;
+  margin: 8px 0 -12px 0;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+
+  a:link,
+  a:visited,
+  a:active{
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+  }
+
+  ion-icon{
+    margin: 0 8px;
+    font-size: 25px; 
+  }
+`
