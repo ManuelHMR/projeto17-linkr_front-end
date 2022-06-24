@@ -107,6 +107,12 @@ const Container = styled.div`
         line-height: 23px;
         color: #C5C5C5;
     }
+    @media (max-width: 1000px) {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, 0);
+        margin-top: 90px;
+    }
 `
 
 export const Search = styled(DebounceInput)`
