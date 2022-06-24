@@ -131,25 +131,22 @@ export default function Post({ infos }) {
     }
   }
 
-  function counterComments() {
-    const promise = axios.get(
-      `https://projeto17-linkr-back-end.herokuapp.com/comments/count/${postId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
-    promise.then(({ response }) => {
-      const { data } = response;
-      setTotalComments(data);
-    });
-    promise.catch((e) => {
-      console.log(e);
-    });
-  }
-
   useEffect(() => {
-    counterComments();
-  }, [token]);
+    (async () => {
+      try {
+        axios.get(`https://projeto17-linkr-back-end.herokuapp.com/comments/count/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        })
+          .then((response) => {
+            setTotalComments(response.data);
+          })
+          .catch((e) => console.log(e));
+      } catch (e) {
+        alert("Erro ao receber dados dos posts");
+        console.log(e.response);
+      }
+    })();
+  }, [setTotalComments, id , token]);
 
   return (
     <>
@@ -206,7 +203,7 @@ export default function Post({ infos }) {
           repostModalBool={repostModalBool}
           setLoading={setLoading}
         />
-        <ChatIcon onClick={showComments} />
+        <ChatIcon onClick={() => showComments()} />
         <QntComments>{totalComments} comments </QntComments>
         <DeleteModal
           infos={infos}

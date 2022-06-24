@@ -7,7 +7,6 @@ export default function PostComment({ postId }) {
   let token = localStorage.getItem("token");
   const [profilePic, setProfilePic] = useState("");
   const [text, setText] = useState("");
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     axios
@@ -31,11 +30,10 @@ export default function PostComment({ postId }) {
         }
       )
       .then(() => {
-        setLoading(false);
-        window.location.reload();
+        alert("Comentário publicado");
       })
       .catch((e) => {
-        setLoading(false);
+        alert("Erro ao publicar o comentário");
         console.log(e);
       });
   }
@@ -44,24 +42,12 @@ export default function PostComment({ postId }) {
     <>
       <Main>
         <Author src={profilePic} alt="profilePicture" />
-        {loading ? (
-          <Comment
-            class="disabled"
-            disabled
-            type="text"
-            placeholder="write a comment..."
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-          />
-        ) : (
           <Comment
             type="text"
             placeholder="write a comment..."
             value={text}
             onChange={(e) => setText(e.target.value)}
           />
-        )}
-
         <Send
           onClick={() => {
             handleComment();
@@ -85,6 +71,10 @@ const Main = styled.div`
     margin-bottom: 30px;
     padding-top: 25px;
     margin-top: -10px;
+    
+    @media (max-width: 1000px) {
+      width: 375px;
+    }
 `
 const Author = styled.img`
     width: 39px;
@@ -116,9 +106,6 @@ const Comment = styled.input`
     font-size: 14px;
     line-height: 16.8px;
   }
-  .disabled{
-    opacity: 0.7;
-}
 `;
 
 const Send = styled(FiSend)`
