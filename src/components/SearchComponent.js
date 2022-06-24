@@ -27,38 +27,54 @@ export default function SearchComponent(){
     return(
         <Container
             style={{backgroundColor: (userArr.length > 0) ? "#E7E7E7" : "none" }}
-        >     
-            <Search 
-                type="text" 
-                placeholder="Search for people"
-                minLength={3}
-                debounceTimeout={300}
-                onChange={(e) => setSearch(e.target.value)}
-                value={search}
-            />
-            <Md></Md>
-            <div className='results'>
-                {userArr.map(element => {
-                    return(
-                        <Link to ={`/user/${element.id}`}>
-                            <div className='user'>
-                            <div className='profilePicture'>
-                                <img src={element.pictureURL}  alt='profilePicture'/>
-                            </div>
-                            <h4>{element.username}</h4>
-                            </div>
-                        </Link>
-                    )
-                })}  
+        >   
+            <div className="mediaQ">
+                <div className="search-box">
+                    <Search 
+                        type="text" 
+                        placeholder="Search for people"
+                        minLength={3}
+                        debounceTimeout={300}
+                        onChange={(e) => setSearch(e.target.value)}
+                        value={search}
+                    />
+                    <Md></Md>
+                </div>  
+                <div className='results'>
+                    {userArr.map(element => {
+                        return(
+                            <Link key={element.id} to ={`/user/${element.id}`}>
+                                <div className='user'>
+                                <div className='profilePicture'>
+                                    <img src={element.pictureURL}  alt='profilePicture'/>
+                                </div>
+                                <h4>{element.username}</h4>
+                                {
+                                    element.following ? 
+                                    <p> • following</p>
+                                    :
+                                    <p></p>
+                                }
+                                </div>
+                            </Link>
+                        )
+                    })}  
+                </div>
             </div>      
         </Container>
     )
 };
 
 const Container = styled.div`
-    margin-top: 3px;
+    margin-top: 3px;  
     border-radius: 8px 8px 0 0;
-    position: relative;
+    .mediaQ{
+        position: relative;
+    }
+    .search-box{
+        position: relative;
+        width: 563px;
+    }
     .results {
         background-color: #E7E7E7;
         border-radius: 0 0 8px 8px;
@@ -81,9 +97,19 @@ const Container = styled.div`
         border-radius: 304px;
         object-fit: cover;
     }
+    p{
+        padding-left: 5px;
+        font-family: 'Lato';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 19px;
+        line-height: 23px;
+        color: #C5C5C5;
+    }
 `
 
 export const Search = styled(DebounceInput)`
+position: absolute;
 width: 563px;
 height: 45px;
 padding-left: 15px;
