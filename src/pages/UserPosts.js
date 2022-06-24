@@ -17,8 +17,7 @@ export default function UserPage() {
   useEffect(() => {
     (async () => {
       try {
-        axios
-          .get(`https://projeto17-linkr-back-end.herokuapp.com/user/${id}`, {
+        axios.get(`https://projeto17-linkr-back-end.herokuapp.com/user/${id}`, {
             headers: { Authorization: `Bearer ${token}` }
         })
           .then((response) => {
@@ -113,9 +112,8 @@ const Posts = styled.div`
   height: auto;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   margin-right: 25px;
-  margin-top: 950px;
   
   @media (max-width: 1000px) {
     width: 375px;
