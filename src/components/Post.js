@@ -6,6 +6,8 @@ import Hashtag from "./Hashtag";
 import EditIcons from "./EditIcons";
 import Like from "./Like";
 import DeleteModal from "./DeleteModal";
+import Repost from "./Repost";
+import RepostModal from "./RepostModal";
 
 export default function Post({ infos }) {
   const {
@@ -25,12 +27,26 @@ export default function Post({ infos }) {
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [repostModalBool, setRepostModalBool] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [postText, setPostText] = useState(
     // <Hashtag>{text}</Hashtag>
     text ||
       "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
+  const [reposts, setReposts] = useState([]);
+
+  useEffect(async () => {
+    try{
+      axios.get(`https://projeto17-linkr-back-end.herokuapp.com/reposts/${id}`)
+              .then(async (response) => {
+                await setReposts(response.data);
+              }).catch(e => console.log(e));
+          } catch (e) {
+            alert("Erro ao receber dados dos reposts");
+            console.log(e.response);
+    }
+  }, [setReposts]);
 
   useEffect(() => {
     if (editMode) {
@@ -89,6 +105,10 @@ export default function Post({ infos }) {
     setIsOpen(!isOpen);
   }
 
+  function toggleRepostModal() {
+    setRepostModalBool(!repostModalBool);
+  }
+
   function toggleEditMode() {
     setEditMode(!editMode);
     setPostText(
@@ -134,6 +154,17 @@ export default function Post({ infos }) {
         toggleEditMode={toggleEditMode}
       ></EditIcons>
       <Like infos={infos}></Like>
+      <Repost
+        infos={infos}
+        reposts={reposts}
+        toggleRepostModal={toggleRepostModal}
+        token = {token}/>
+        <RepostModal
+        infos={infos}
+        toggleRepostModal={toggleRepostModal}
+        repostModalBool={repostModalBool}
+        setLoading={setLoading}
+       />
       <DeleteModal
         infos={infos}
         toggleModal={toggleModal}
@@ -164,6 +195,19 @@ const PostContainer = styled.div`
   color: #ffffff;
   font-family: "Lato", sans-serif;
   font-weight: 300;
+
+  a:link,
+  a:visited,
+  a:active{
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  a:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
+
 
   img {
     height: 50px;
@@ -208,19 +252,6 @@ const LinkBox = styled.div`
   font-family: "Lato", sans-serif;
   font-weight: 400;
   position: relative;
-
-  a:link {
-    text-decoration: none;
-  }
-  a:visited {
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: none;
-  }
-  a:active {
-    text-decoration: none;
-  }
 
   a {
     width: 300px;
