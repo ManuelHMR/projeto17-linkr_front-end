@@ -78,6 +78,7 @@ const Container = styled.div`
     .results {
         background-color: #E7E7E7;
         border-radius: 0 0 8px 8px;
+        padding-top: 45px;
     }
     .user{
         width: 100%;
