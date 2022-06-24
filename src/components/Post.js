@@ -6,6 +6,9 @@ import Hashtag from "./Hashtag";
 import EditIcons from "./EditIcons";
 import Like from "./Like";
 import DeleteModal from "./DeleteModal";
+import { BsChatDots } from "react-icons/bs";
+import PostComment from "./CommentPost";
+import Comments from "./CommentBox";
 import Repost from "./Repost";
 import RepostModal from "./RepostModal";
 
@@ -30,6 +33,8 @@ export default function Post({ infos }) {
   const [isOpen, setIsOpen] = useState(false);
   const [repostModalBool, setRepostModalBool] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [totalComments, setTotalComments] = useState(0);
+  const [comments, setComments] = useState(false);
   const [postText, setPostText] = useState(
     // <Hashtag>{text}</Hashtag>
     text ||
@@ -118,6 +123,34 @@ export default function Post({ infos }) {
     );
   }
 
+  function showComments() {
+    if (setComments(false)) {
+      setComments(true);
+    } else {
+      setComments(false);
+    }
+  }
+
+  function counterComments() {
+    const promise = axios.get(
+      `https://projeto17-linkr-back-end.herokuapp.com/comments/count/${postId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    promise.then(({ response }) => {
+      const { data } = response;
+      setTotalComments(data);
+    });
+    promise.catch((e) => {
+      console.log(e);
+    });
+  }
+
+  useEffect(() => {
+    counterComments();
+  }, [token]);
+
   return (
     <>
     {repostUser? (
@@ -173,6 +206,8 @@ export default function Post({ infos }) {
           repostModalBool={repostModalBool}
           setLoading={setLoading}
         />
+        <ChatIcon onClick={showComments()} />
+        <QntComments>{totalComments} comments </QntComments>
         <DeleteModal
           infos={infos}
           toggleModal={toggleModal}
@@ -188,6 +223,14 @@ export default function Post({ infos }) {
           <></>
         )}
       </PostContainer>
+      {comments ? (
+        <>
+          <Comments postId={postId} />
+        </>
+      ) : (
+        <></>
+      )}
+      <PostComment postId={postId} />
     </>
   );
 }
@@ -207,16 +250,15 @@ const PostContainer = styled.div`
 
   a:link,
   a:visited,
-  a:active{
+  a:active {
     text-decoration: none;
     color: inherit;
   }
-  
+
   a:hover {
     text-decoration: none;
     cursor: pointer;
   }
-
 
   img {
     height: 50px;
@@ -301,6 +343,23 @@ const Loading = styled.div`
   left: 0;
   z-index: 20;
   font-size: 27px;
+`;
+const ChatIcon = styled(BsChatDots)`
+  position: absolute;
+  top: 165px;
+  left: 35px;
+  color: #ffffff;
+  font-size: 22px;
+`;
+const QntComments = styled.p`
+  position: absolute;
+  top: 195px;
+  left: 18px;
+  color: #ffffff;
+  font-size: 11px;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  line-height: 13.2px;
 `;
 
 const Repostedlook = styled.div`

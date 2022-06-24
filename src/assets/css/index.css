@@ -10,6 +10,7 @@ font-family: 'Passion One', cursive; -- weight: 700;
 
 * {
     box-sizing: border-box;
+    text-decoration: none;
 }
 
 body {
