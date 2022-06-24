@@ -206,7 +206,7 @@ export default function Post({ infos }) {
           repostModalBool={repostModalBool}
           setLoading={setLoading}
         />
-        <ChatIcon onClick={showComments()} />
+        <ChatIcon onClick={showComments} />
         <QntComments>{totalComments} comments </QntComments>
         <DeleteModal
           infos={infos}
@@ -346,14 +346,14 @@ const Loading = styled.div`
 `;
 const ChatIcon = styled(BsChatDots)`
   position: absolute;
-  top: 165px;
+  top: 155px;
   left: 35px;
   color: #ffffff;
   font-size: 22px;
 `;
 const QntComments = styled.p`
   position: absolute;
-  top: 195px;
+  top: 180px;
   left: 18px;
   color: #ffffff;
   font-size: 11px;

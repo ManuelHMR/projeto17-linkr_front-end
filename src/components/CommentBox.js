@@ -7,14 +7,12 @@ export default function Comments({ postId }) {
   const token = localStorage.getItem("token");
   const [comments, setComments] = useState([]);
   const [commentId, setCommentId] = useState(0);
-  const [username, setUsername] = useState("");
-  const [pictureURL, setPictureURL] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [userComment, setUserComment] = useState({});
+  const { username, pictureURL } = userComment;
 
   useEffect(() => {
     (async () => {
       try {
-        setIsLoading(true);
         axios
           .get(
             `https://projeto17-linkr-back-end.herokuapp.com/comments/${postId}`,
@@ -27,40 +25,38 @@ export default function Comments({ postId }) {
             const { userId } = data;
             setComments(data);
             setCommentId(userId);
-            setIsLoading(false);
           })
           .catch((e) => console.log(e));
       } catch (e) {
         console.log(e.response);
-        setIsLoading(false);
       }
     })();
   }, [token, postId]);
 
   useEffect(() => {
     axios
-      .get(`https://projeto17-linkr-back-end.herokuapp.com/comment/${commentId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
+      .get(
+        `https://projeto17-linkr-back-end.herokuapp.com/comment/${commentId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
       .then((response) => {
-        const { username, pictureURL } = response.data;
-        setUsername(username);
-        setPictureURL(pictureURL);
+        const { data } = response;
+        setUserComment(data);
       })
       .catch((e) => console.log(e));
   }, [token, commentId]);
 
   return (
     <>
-      {isLoading ? (
-        <Loading />
-      ) : (
+      {comments ? (
         comments.map((comment) => {
           const { text } = comment;
           return (
             <CommentsContent>
               <HeaderComment username={username} />
-              <UserComment src={pictureURL} alt="User comment picture"/>
+              <UserComment src={pictureURL} alt="User comment picture" />
               <CommentContent>
                 <textarea>{text}</textarea>
               </CommentContent>
@@ -68,6 +64,8 @@ export default function Comments({ postId }) {
             </CommentsContent>
           );
         })
+      ) : (
+        <Loading />
       )}
     </>
   );

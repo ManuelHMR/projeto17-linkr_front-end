@@ -36,7 +36,7 @@ const RepostIcon = styled.div`
   margin-left: 18px;
   position: absolute;
   left: 0;
-  bottom: 50px;
+  bottom: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
