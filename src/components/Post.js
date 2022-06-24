@@ -6,6 +6,8 @@ import Hashtag from "./Hashtag";
 import EditIcons from "./EditIcons";
 import Like from "./Like";
 import DeleteModal from "./DeleteModal";
+import { BsChatDots } from "react-icons/bs";
+import PostComment from "./CommentPost";
 
 export default function Post({ infos }) {
   const {
@@ -26,6 +28,7 @@ export default function Post({ infos }) {
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
+  const [totalComments, setTotalComments] = useState(0);
   const [postText, setPostText] = useState(
     // <Hashtag>{text}</Hashtag>
     text ||
@@ -98,7 +101,28 @@ export default function Post({ infos }) {
     );
   }
 
+  function counterComments() {
+    const promise = axios.get(
+      `https://projeto17-linkr-back-end.herokuapp.com/comments/count/${postId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    promise.then(({ response }) => {
+      const { data } = response;
+      setTotalComments(data);
+    });
+    promise.catch((e) => {
+      console.log(e);
+    });
+  }
+
+  useEffect(() => {
+    counterComments();
+  }, []);
+
   return (
+    <>
     <PostContainer>
       <img src={pictureURL} alt="Foto de perfil"></img>
       <PostInfos edit={editMode}>
@@ -133,6 +157,8 @@ export default function Post({ infos }) {
         toggleEditMode={toggleEditMode}
       ></EditIcons>
       <Like infos={infos}></Like>
+      <ChatIcon />
+      <QntComments>{totalComments} comments </QntComments>
       <DeleteModal infos={infos} toggleModal={toggleModal} isOpen={isOpen} setLoading={setLoading} ></DeleteModal>
       {loading ? (
         <Loading>
@@ -143,6 +169,8 @@ export default function Post({ infos }) {
         <></>
       )}
     </PostContainer>
+    <PostComment postId={postId}/>
+    </>
   );
 }
 
@@ -154,7 +182,7 @@ const PostContainer = styled.div`
   background: #171717;
   display: flex;
   border-radius: 16px;
-  margin: 8px 0;
+  margin: 0px 0;
   color: #ffffff;
   font-family: "Lato", sans-serif;
   font-weight: 300;
@@ -256,3 +284,21 @@ const Loading = styled.div`
   z-index: 20;
   font-size: 27px;
 `;
+
+const ChatIcon = styled(BsChatDots)`
+    position: absolute;
+    top: 165px;
+    left: 35px;
+    color: #FFFFFF;
+    font-size: 22px;
+`
+const QntComments = styled.p`
+    position: absolute;
+    top: 195px;
+    left: 18px;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-family: "Lato", sans-serif;
+    font-weight: 400;
+    line-height: 13.2px;
+`

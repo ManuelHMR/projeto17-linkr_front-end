@@ -15,8 +15,7 @@ export default function TagPage() {
   useEffect(() => {
     (async () => {
       try {
-        axios
-          .get(`https://projeto17-linkr-back-end.herokuapp.com/hashtag/${hashtag}`, {
+        axios.get(`https://projeto17-linkr-back-end.herokuapp.com/hashtag/${hashtag}`, {
             headers: { Authorization: `Bearer ${token}` }
         })
           .then((response) => {
@@ -91,9 +90,8 @@ const Posts = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  align-items: center;
   margin-right: 25px;
-  margin-top: 950px;
 
   @media (max-width: 1000px) {
     width: 375px;
