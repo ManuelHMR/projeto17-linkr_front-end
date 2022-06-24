@@ -79,7 +79,7 @@ export default function Timeline() {
         </Topo>
         <Container>
           <Posts>
-            {/* <AllPosts>
+            <AllPosts>
               <NewPost></NewPost>
               <InfiniteScroll
                 pageStart={0}
@@ -102,7 +102,7 @@ export default function Timeline() {
                   <></>
                 )}
               </InfiniteScroll>
-            </AllPosts> */}
+            </AllPosts>
           </Posts>
           <TrendingTags />
         </Container>
