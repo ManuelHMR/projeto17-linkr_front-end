@@ -8,6 +8,7 @@ import Like from "./Like";
 import DeleteModal from "./DeleteModal";
 import { BsChatDots } from "react-icons/bs";
 import PostComment from "./CommentPost";
+import Comments from "./CommentBox";
 
 export default function Post({ infos }) {
   const {
@@ -29,6 +30,7 @@ export default function Post({ infos }) {
   const [isOpen, setIsOpen] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
+  const [comments, setComments] = useState(false);
   const [postText, setPostText] = useState(
     // <Hashtag>{text}</Hashtag>
     text ||
@@ -100,6 +102,14 @@ export default function Post({ infos }) {
     );
   }
 
+  function showComments() {
+    if(setComments(false)){
+      setComments(true);
+    }else{
+      setComments(false);
+    }
+  }
+
   function counterComments() {
     const promise = axios.get(
       `https://projeto17-linkr-back-end.herokuapp.com/comments/count/${postId}`,
@@ -118,64 +128,71 @@ export default function Post({ infos }) {
 
   useEffect(() => {
     counterComments();
-  }, []);
+  }, [token]);
 
   return (
     <>
-    <PostContainer>
-      <img src={pictureURL} alt="Foto de perfil"></img>
-      <PostInfos edit={editMode}>
-        <Link to={`/user/${userId}`} key={userId}>
-          <h4>{username || "Anonymous"}</h4>
-        </Link>
-        {editMode ? (
-          <form onSubmit={editPost}>
-            <textarea
-              className="postText"
-              ref={inputRef}
-              placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
-              onChange={(e) => setPostText(e.target.value)}
-              value={postText}
-              required
-              disabled={!editMode}
-            ></textarea>
-          </form>
+      <PostContainer>
+        <img src={pictureURL} alt="Foto de perfil"></img>
+        <PostInfos edit={editMode}>
+          <Link to={`/user/${userId}`} key={userId}>
+            <h4>{username || "Anonymous"}</h4>
+          </Link>
+          {editMode ? (
+            <form onSubmit={editPost}>
+              <textarea
+                className="postText"
+                ref={inputRef}
+                placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+                onChange={(e) => setPostText(e.target.value)}
+                value={postText}
+                required
+                disabled={!editMode}
+              ></textarea>
+            </form>
+          ) : (
+            <Hashtag>{postText}</Hashtag>
+          )}
+          <LinkBox>
+            <a href={url} target="_blank" rel="noopener noreferrer">
+              <h5>{title}</h5>
+              <p>{description}</p>
+              <p>{url}</p>
+              <img src={image} alt="Imagem do Post"></img>
+            </a>
+          </LinkBox>
+        </PostInfos>
+        <EditIcons
+          infos={infos}
+          toggleModal={toggleModal}
+          toggleEditMode={toggleEditMode}
+        ></EditIcons>
+        <Like infos={infos}></Like>
+        <ChatIcon onClick={showComments()}/>
+        <QntComments>{totalComments} comments </QntComments>
+        <DeleteModal
+          infos={infos}
+          toggleModal={toggleModal}
+          isOpen={isOpen}
+          setLoading={setLoading}
+        ></DeleteModal>
+        {loading ? (
+          <Loading>
+            <ion-icon name="cloud-upload"></ion-icon>
+            Carregando ...
+          </Loading>
         ) : (
-          <Hashtag>{postText}</Hashtag>
+          <></>
         )}
-        <LinkBox>
-          <a href={url} target="_blank" rel="noopener noreferrer">
-            <h5>{title}</h5>
-            <p>{description}</p>
-            <p>{url}</p>
-            <img src={image} alt="Imagem do Post"></img>
-          </a>
-        </LinkBox>
-      </PostInfos>
-      <EditIcons
-        infos={infos}
-        toggleModal={toggleModal}
-        toggleEditMode={toggleEditMode}
-      ></EditIcons>
-      <Like infos={infos}></Like>
-      <ChatIcon />
-      <QntComments>{totalComments} comments </QntComments>
-      <DeleteModal
-        infos={infos}
-        toggleModal={toggleModal}
-        isOpen={isOpen}
-        setLoading={setLoading}
-      ></DeleteModal>
-      {loading ? (
-        <Loading>
-          <ion-icon name="cloud-upload"></ion-icon>
-          Carregando ...
-        </Loading>
+      </PostContainer>
+      {comments ? (
+        <>
+          <Comments postId={postId}/>
+        </>
       ) : (
         <></>
       )}
-    </PostContainer>
-    <PostComment postId={postId}/>
+      <PostComment postId={postId} />
     </>
   );
 }
