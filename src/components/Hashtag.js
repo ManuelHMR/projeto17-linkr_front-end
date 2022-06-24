@@ -18,4 +18,5 @@ export default Hashtag;
 const StyledHashtag = styled.a`
   font-weight: 700;
   color: white;
+  cursor: pointer;
 `;

@@ -248,6 +248,10 @@ const PostContainer = styled.div`
   font-family: "Lato", sans-serif;
   font-weight: 300;
 
+  @media (max-width: 1000px) {
+    width: 375px;
+  }
+
   a:link,
   a:visited,
   a:active {
@@ -303,6 +307,10 @@ const LinkBox = styled.div`
   font-family: "Lato", sans-serif;
   font-weight: 400;
   position: relative;
+  @media (max-width: 1000px) {
+    width: 278px;
+    height: 115px;
+  }
 
   a {
     width: 300px;
@@ -346,14 +354,15 @@ const Loading = styled.div`
 `;
 const ChatIcon = styled(BsChatDots)`
   position: absolute;
-  top: 155px;
+  top: 135px;
   left: 35px;
   color: #ffffff;
   font-size: 22px;
+  cursor: pointer;
 `;
 const QntComments = styled.p`
   position: absolute;
-  top: 180px;
+  top: 160px;
   left: 18px;
   color: #ffffff;
   font-size: 11px;
