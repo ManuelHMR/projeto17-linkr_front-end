@@ -50,7 +50,6 @@ export default function Post({ infos }) {
     }
   }, [editMode]);
 
-
   function editPost(e) {
     setLoading(true);
     e.preventDefault();
@@ -129,19 +128,21 @@ export default function Post({ infos }) {
         <Link to={`/user/${userId}`} key={userId}>
           <h4>{username || "Anonymous"}</h4>
         </Link>
-        <form onSubmit={editPost}>
-          {/* <Hashtag> */}
-          <textarea
-            className="postText"
-            ref={inputRef}
-            placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
-            onChange={(e) => setPostText(e.target.value)}
-            value={postText}
-            required
-            disabled={!editMode}
-          ></textarea>
-          {/* </Hashtag> */}
-        </form>
+        {editMode ? (
+          <form onSubmit={editPost}>
+            <textarea
+              className="postText"
+              ref={inputRef}
+              placeholder="Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+              onChange={(e) => setPostText(e.target.value)}
+              value={postText}
+              required
+              disabled={!editMode}
+            ></textarea>
+          </form>
+        ) : (
+          <Hashtag>{postText}</Hashtag>
+        )}
         <LinkBox>
           <a href={url} target="_blank" rel="noopener noreferrer">
             <h5>{title}</h5>
@@ -159,7 +160,12 @@ export default function Post({ infos }) {
       <Like infos={infos}></Like>
       <ChatIcon />
       <QntComments>{totalComments} comments </QntComments>
-      <DeleteModal infos={infos} toggleModal={toggleModal} isOpen={isOpen} setLoading={setLoading} ></DeleteModal>
+      <DeleteModal
+        infos={infos}
+        toggleModal={toggleModal}
+        isOpen={isOpen}
+        setLoading={setLoading}
+      ></DeleteModal>
       {loading ? (
         <Loading>
           <ion-icon name="cloud-upload"></ion-icon>

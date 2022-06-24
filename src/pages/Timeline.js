@@ -6,11 +6,15 @@ import Header from "../components/Header";
 import NewPost from "../components/NewPost";
 import Post from "../components/Post";
 import TrendingTags from "../components/TagsBox";
+import InfiniteScroll from "react-infinite-scroller";
 
 export default function Timeline() {
-
   const token = localStorage.getItem("token");
-  const [posts, setPosts] = useState();
+
+  const [posts, setPosts] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [pageCount, setPageCount] = useState(0);
+  const URL = "https://projeto17-linkr-back-end.herokuapp.com/posts";
   
     useEffect(() => {
         (async () => {
@@ -28,7 +32,29 @@ export default function Timeline() {
         })();
     }, [setPosts, token]);
 
+  
+  function getPosts() {
+    axios
+    .get(`${URL}/${pageCount}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      if (response.data.length === 0) {
+        setHasMore(false);
+      }
+      setPosts([...posts, ...response.data]);
+      setPageCount(pageCount + 1);
+    })
+    .catch((e) => {
+      console.log(e);
+      alert("Erro ao carregar posts");
+    });
+  }
 
+  useEffect(() => {
+    getPosts();
+  }, []);
+  
   return (
     <>
       <Header />
@@ -40,15 +66,24 @@ export default function Timeline() {
           <Posts>
             <AllPosts>
               <NewPost></NewPost>
-              {posts ? (
-                posts.length > 0 ? (
-                  posts.map((post,index) => <Post key={index} infos={post} />)
+              <InfiniteScroll
+                pageStart={0}
+                loadMore={getPosts}
+                hasMore={hasMore}
+                loader={<div className="loading" />}
+              >
+                {posts ? (
+                  posts.length > 0 ? (
+                    posts.map((post, index) => (
+                      <Post key={index} infos={post} />
+                    ))
+                  ) : (
+                    <p className="no-posts">There are no posts yet</p>
+                  )
                 ) : (
-                  <p className="no-posts">There are no posts yet</p>
-                )
-              ) : (
-                <div className="loading" />
-              )}
+                  <></>
+                )}
+              </InfiniteScroll>
             </AllPosts>
           </Posts>
           <TrendingTags />

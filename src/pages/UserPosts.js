@@ -5,7 +5,8 @@ import { useParams } from "react-router-dom"
 
 import Header from "../components/Header";
 import TrendingTags from "../components/TagsBox";
-import Post  from "./../components/Post"
+import Post  from "./../components/Post";
+import FollowButton from "./../components/FollowButton"
 
 export default function UserPage() {
   const token = localStorage.getItem("token");
@@ -43,7 +44,12 @@ export default function UserPage() {
         </Topo>
         <Container>
           <Posts>{posts ? posts.map((post,index) => <Post key={index} infos={post} />) : <Loading />}</Posts>
-          <TrendingTags />
+          <div className="side">
+            <FollowButton
+              id = {id}
+            />
+            <TrendingTags />
+          </div>
         </Container>
       </Main>
     </>
@@ -54,7 +60,6 @@ const Main = styled.main`
   display: flex;
   flex-direction: column;
   margin-top: 72px;
-  }
 `;
 
 const Topo = styled.div`
@@ -95,6 +100,11 @@ const Container = styled.div`
   height: 100vh;
   display: flex;
   justify-content: center;
+  .side{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
 `;
 
 const Posts = styled.div`

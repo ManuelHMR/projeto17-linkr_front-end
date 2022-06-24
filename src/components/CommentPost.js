@@ -66,7 +66,7 @@ const Main = styled.div`
     height: 83px;
     background-color: #1E1E1E;
     border-radius: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 30px;
 `
 const Author = styled.img`
     width: 39px;
