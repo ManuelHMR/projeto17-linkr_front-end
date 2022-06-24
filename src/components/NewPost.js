@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
@@ -7,6 +7,17 @@ export default function NewPost() {
     const [url, setUrl] = useState('');
     const [text, setText] = useState('');
     const token = localStorage.getItem('token');
+    const [profilePic, setProfilePic] = useState("");
+
+    useEffect(() => {
+        axios.get('https://projeto17-linkr-back-end.herokuapp.com/userpic', { headers: { Authorization: `Bearer ${token}`}})
+            .then(res => {
+                const {pictureURL} = res.data
+                setProfilePic(pictureURL)
+            })
+            .catch(e => console.log(e))
+    }, [token]);
+
 
     function publishPost(e) {
         setLoading(true);
@@ -26,7 +37,7 @@ export default function NewPost() {
 
     return (
         <NewPostContainer>
-            <img></img>
+            <img src={profilePic}></img>
             <PublicationForm>
                 <h4>What are you going to share today?</h4>
                 {loading ? (

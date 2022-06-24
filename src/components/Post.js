@@ -130,7 +130,7 @@ export default function Post({ infos }) {
       setComments(false);
     }
   }
-
+  
   useEffect(() => {
     (async () => {
       try {
