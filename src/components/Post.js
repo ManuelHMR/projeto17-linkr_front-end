@@ -23,6 +23,7 @@ export default function Post({ infos }) {
     title,
     image,
     description,
+    repostUser
   } = infos;
   let postId = id || 1;
 
@@ -37,18 +38,16 @@ export default function Post({ infos }) {
   const [postText, setPostText] = useState(
     // <Hashtag>{text}</Hashtag>
     text ||
-      "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+    "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
   const [reposts, setReposts] = useState([]);
 
   useEffect(async () => {
     try {
-      axios
-        .get(`https://projeto17-linkr-back-end.herokuapp.com/reposts/${id}`)
+      axios.get(`https://projeto17-linkr-back-end.herokuapp.com/reposts/${id}`)
         .then(async (response) => {
           await setReposts(response.data);
-        })
-        .catch((e) => console.log(e));
+        }).catch(e => console.log(e));
     } catch (e) {
       alert("Erro ao receber dados dos reposts");
       console.log(e.response);
@@ -120,7 +119,7 @@ export default function Post({ infos }) {
     setEditMode(!editMode);
     setPostText(
       text ||
-        "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
+      "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
     );
   }
 
@@ -154,6 +153,12 @@ export default function Post({ infos }) {
 
   return (
     <>
+    {repostUser? (
+     <Repostedlook>
+       <ion-icon name="repeat"></ion-icon>
+      <p>Re-posted by <Link to={`/user/${repostUser}`} key={repostUser}>{repostUser}</Link></p>
+     </Repostedlook> 
+    ):(<></>)}
       <PostContainer>
         <img src={pictureURL} alt="Foto de perfil"></img>
         <PostInfos edit={editMode}>
@@ -194,8 +199,7 @@ export default function Post({ infos }) {
           infos={infos}
           reposts={reposts}
           toggleRepostModal={toggleRepostModal}
-          token={token}
-        />
+          token={token} />
         <RepostModal
           infos={infos}
           toggleRepostModal={toggleRepostModal}
@@ -239,7 +243,7 @@ const PostContainer = styled.div`
   background: #171717;
   display: flex;
   border-radius: 16px;
-  margin: 0px 0;
+  margin: 0 0 8px 0;
   color: #ffffff;
   font-family: "Lato", sans-serif;
   font-weight: 300;
@@ -340,7 +344,6 @@ const Loading = styled.div`
   z-index: 20;
   font-size: 27px;
 `;
-
 const ChatIcon = styled(BsChatDots)`
   position: absolute;
   top: 165px;
@@ -358,3 +361,30 @@ const QntComments = styled.p`
   font-weight: 400;
   line-height: 13.2px;
 `;
+
+const Repostedlook = styled.div`
+  heigth: 33px;
+  background: #1E1E1E;
+  color: #FFFFFF;
+  display: flex;
+  font-size: 16px;
+  align-items: center;
+  padding-bottom: 12px;
+  border-radius: 16px 16px 0 0;
+  margin: 8px 0 -12px 0;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+
+  a:link,
+  a:visited,
+  a:active{
+    text-decoration: none;
+    color: inherit;
+    font-weight: 700;
+  }
+
+  ion-icon{
+    margin: 0 8px;
+    font-size: 25px; 
+  }
+`
