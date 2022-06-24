@@ -54,15 +54,15 @@ export default function Like({ infos }) {
     if (likesInfo.likes == 0) {
       setInfoText("Ninguém curtiu este post");
     } else if (likesInfo.likes == 1) {
-      setInfoText(likesInfo.likesUsers[0].username + " curtiu este post");
+      setInfoText(likesInfo.likesUsers[0]?.username + " curtiu este post");
     } else if (likesInfo.likes == 2) {
       setInfoText(
-        `${likesInfo.likesUsers[0].username} e ${likesInfo.likesUsers[1].username} curtiram este post`
+        `${likesInfo.likesUsers[0]?.username} e ${likesInfo.likesUsers[1]?.username} curtiram este post`
       );
     } else if (likesInfo.likes > 2) {
       setInfoText(
-        `${likesInfo.likesUsers[0].username}, ${
-          likesInfo.likesUsers[1].username
+        `${likesInfo.likesUsers[0]?.username}, ${
+          likesInfo.likesUsers[1]?.username
         } e outras ${likesInfo.likes * 1 - 2} pessoas`
       );
     }

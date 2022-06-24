@@ -9,6 +9,8 @@ import DeleteModal from "./DeleteModal";
 import { BsChatDots } from "react-icons/bs";
 import PostComment from "./CommentPost";
 import Comments from "./CommentBox";
+import Repost from "./Repost";
+import RepostModal from "./RepostModal";
 
 export default function Post({ infos }) {
   const {
@@ -28,6 +30,7 @@ export default function Post({ infos }) {
   const token = localStorage.getItem("token");
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [repostModalBool, setRepostModalBool] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [totalComments, setTotalComments] = useState(0);
   const [comments, setComments] = useState(false);
@@ -36,6 +39,21 @@ export default function Post({ infos }) {
     text ||
       "Muito maneiro este Material UI com React, deem uma olhada! #react #material"
   );
+  const [reposts, setReposts] = useState([]);
+
+  useEffect(async () => {
+    try {
+      axios
+        .get(`https://projeto17-linkr-back-end.herokuapp.com/reposts/${id}`)
+        .then(async (response) => {
+          await setReposts(response.data);
+        })
+        .catch((e) => console.log(e));
+    } catch (e) {
+      alert("Erro ao receber dados dos reposts");
+      console.log(e.response);
+    }
+  }, [setReposts]);
 
   useEffect(() => {
     if (editMode) {
@@ -94,6 +112,10 @@ export default function Post({ infos }) {
     setIsOpen(!isOpen);
   }
 
+  function toggleRepostModal() {
+    setRepostModalBool(!repostModalBool);
+  }
+
   function toggleEditMode() {
     setEditMode(!editMode);
     setPostText(
@@ -103,9 +125,9 @@ export default function Post({ infos }) {
   }
 
   function showComments() {
-    if(setComments(false)){
+    if (setComments(false)) {
       setComments(true);
-    }else{
+    } else {
       setComments(false);
     }
   }
@@ -168,7 +190,19 @@ export default function Post({ infos }) {
           toggleEditMode={toggleEditMode}
         ></EditIcons>
         <Like infos={infos}></Like>
-        <ChatIcon onClick={showComments()}/>
+        <Repost
+          infos={infos}
+          reposts={reposts}
+          toggleRepostModal={toggleRepostModal}
+          token={token}
+        />
+        <RepostModal
+          infos={infos}
+          toggleRepostModal={toggleRepostModal}
+          repostModalBool={repostModalBool}
+          setLoading={setLoading}
+        />
+        <ChatIcon onClick={showComments()} />
         <QntComments>{totalComments} comments </QntComments>
         <DeleteModal
           infos={infos}
@@ -187,7 +221,7 @@ export default function Post({ infos }) {
       </PostContainer>
       {comments ? (
         <>
-          <Comments postId={postId}/>
+          <Comments postId={postId} />
         </>
       ) : (
         <></>
@@ -209,6 +243,18 @@ const PostContainer = styled.div`
   color: #ffffff;
   font-family: "Lato", sans-serif;
   font-weight: 300;
+
+  a:link,
+  a:visited,
+  a:active {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  a:hover {
+    text-decoration: none;
+    cursor: pointer;
+  }
 
   img {
     height: 50px;
@@ -254,19 +300,6 @@ const LinkBox = styled.div`
   font-weight: 400;
   position: relative;
 
-  a:link {
-    text-decoration: none;
-  }
-  a:visited {
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: none;
-  }
-  a:active {
-    text-decoration: none;
-  }
-
   a {
     width: 300px;
     display: flex;
@@ -309,19 +342,19 @@ const Loading = styled.div`
 `;
 
 const ChatIcon = styled(BsChatDots)`
-    position: absolute;
-    top: 165px;
-    left: 35px;
-    color: #FFFFFF;
-    font-size: 22px;
-`
+  position: absolute;
+  top: 165px;
+  left: 35px;
+  color: #ffffff;
+  font-size: 22px;
+`;
 const QntComments = styled.p`
-    position: absolute;
-    top: 195px;
-    left: 18px;
-    color: #FFFFFF;
-    font-size: 11px;
-    font-family: "Lato", sans-serif;
-    font-weight: 400;
-    line-height: 13.2px;
-`
+  position: absolute;
+  top: 195px;
+  left: 18px;
+  color: #ffffff;
+  font-size: 11px;
+  font-family: "Lato", sans-serif;
+  font-weight: 400;
+  line-height: 13.2px;
+`;

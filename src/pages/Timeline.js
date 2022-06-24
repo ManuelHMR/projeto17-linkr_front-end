@@ -14,6 +14,7 @@ export default function Timeline() {
   const [posts, setPosts] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageCount, setPageCount] = useState(0);
+  const [followings, setFollowings] = useState([]);
   const URL = "https://projeto17-linkr-back-end.herokuapp.com/posts";
   
     useEffect(() => {
@@ -51,7 +52,21 @@ export default function Timeline() {
     });
   }
 
+  function getFollowings() {
+    axios
+    .get("https://projeto17-linkr-back-end.herokuapp.com/following", {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((response) => {
+      setFollowings(response.data);
+    })
+    .catch((e) => {
+      console.log(e);
+    });
+  }
+
   useEffect(() => {
+    getFollowings();
     getPosts();
   }, []);
   
@@ -78,7 +93,10 @@ export default function Timeline() {
                       <Post key={index} infos={post} />
                     ))
                   ) : (
-                    <p className="no-posts">There are no posts yet</p>
+                    followings.length > 0 ? 
+                      <p className="no-posts">No posts found from your friends</p>
+                      :
+                      <p className="no-posts">You don't follow anyone yet. Search for new friends!</p>
                   )
                 ) : (
                   <></>

@@ -35,7 +35,7 @@ export default function Comments({ postId }) {
         setIsLoading(false);
       }
     })();
-  }, [token]);
+  }, [token, postId]);
 
   useEffect(() => {
     axios
@@ -48,7 +48,7 @@ export default function Comments({ postId }) {
         setPictureURL(pictureURL);
       })
       .catch((e) => console.log(e));
-  }, [token]);
+  }, [token, commentId]);
 
   return (
     <>
