@@ -203,7 +203,7 @@ export default function Post({ infos }) {
           repostModalBool={repostModalBool}
           setLoading={setLoading}
         />
-        <ChatIcon onClick={() => showComments()} />
+        <ChatIcon onClick={showComments} />
         <QntComments>{totalComments} comments </QntComments>
         <DeleteModal
           infos={infos}
