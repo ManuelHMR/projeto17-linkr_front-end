@@ -1,0 +1,42 @@
+/* Importação das fontes usadas */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Oswald:wght@700&family=Passion+One:wght@700&display=swap');
+
+/*
+Fontes usadas:
+font-family: 'Lato', sans-serif; -- weights: 300, 400 e 700;
+font-family: 'Oswald', sans-serif; -- weight: 700;
+font-family: 'Passion One', cursive; -- weight: 700; 
+*/
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-color: #333333;
+}
+
+.buttons {
+    width: 100%;
+}
+
+.buttons button {
+    border: none;
+    width: 30%;
+    height: 100%;
+    border-radius: 10px;
+    color: #2F77F2;
+    margin: 0 15px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.buttons button:last-child {
+    background: #2F77F2;
+    color: white;
+}
