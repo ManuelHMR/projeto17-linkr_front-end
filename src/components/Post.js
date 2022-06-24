@@ -139,8 +139,7 @@ export default function Post({ infos }) {
       }
     );
     promise.then(({ response }) => {
-      const { data } = response;
-      setTotalComments(data);
+      setTotalComments(response.data);
     });
     promise.catch((e) => {
       console.log(e);
